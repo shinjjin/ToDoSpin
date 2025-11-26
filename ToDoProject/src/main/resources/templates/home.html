@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <titel>Home</titel>
+    </head>
+<body>
+    <h2>ToDo-List</h2>
+
+    <div class="task-container">
+    <div class="task-box" id="taskBox">
+      <h3>Task:</h3>
+      <div id="taskList"></div>
+    </div>
+
+    <input type="text" id="taskInput" class="task-input" placeholder="Neuen Task eingeben...">
+
+    <div class="button-group">
+      <button class="add-btn" onclick="addTask()">Hinzufügen</button>
+      <button class="delete-btn" onclick="deleteTasks()">Löschen</button>
+    </div>
+  </div>
+
+</body>
+</html>

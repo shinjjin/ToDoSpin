@@ -32,15 +32,15 @@ public class HomeController {
     @PostMapping("/edit")
     public String editTask(@RequestParam long id, @RequestParam String text){
         tasks.stream()                                           //geht durch Tasks und sucht nach Task mit passender ID
-                .filter(t -> t.getId() == id)
+                .filter(task -> task.getId() == id)
                 .findFirst()
-                .ifPresent(t -> t.setName(text));          //übergibt neuen Text
+                .ifPresent(task -> task.setName(text));          //übergibt neuen Text
         return "redirect:/";
     }
 
     @PostMapping("/delete")
     public String deleteTask(@RequestParam long id) {
-        tasks.removeIf(t -> t.getId() == id);                //löscht den Task mit der passenden ID
+        tasks.removeIf(task -> task.getId() == id);                //löscht den Task mit der passenden ID
         return "redirect:/";
     }
 

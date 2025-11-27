@@ -1,7 +1,7 @@
 package SoftwareEngineering.ToDoProject;
 
 public class Task {
-    private long id;
+    private long id; //ID
     private String name;
     private boolean state;
 

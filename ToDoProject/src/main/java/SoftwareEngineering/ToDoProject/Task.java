@@ -5,7 +5,7 @@ public class Task {
     private String name;
     private boolean state;
 
-    public Task(int id, String text, boolean state) {
+    public Task(int id, String name, boolean state) {
         this.id = id;
         this.name = name;
         this.state = state;

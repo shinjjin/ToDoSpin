@@ -23,17 +23,17 @@ public class HomeController {
 
     @PostMapping("/add")
     public String addTask(@RequestParam String text){
-        Task task = new Task(currentId++, text, false);
-        task.setName(text);
-        tasks.add(task);
+        Task task = new Task(currentId++, text, false);     //erstellt Task und gibt dem Task ID
+        task.setName(text);                                      //übergibt den eingegeben Text
+        tasks.add(task);                                         //fügt Task in ArrayList ein
         return "redirect:/";
     }
 
     @PostMapping("/edit")
     public String editTask(@RequestParam long id, @RequestParam String text){
-        for (Task t: tasks) {
+        for (Task t: tasks) {                                     //geht durch Tasks und sucht nach Task mit passender ID
             if (t.getId() == id) {
-                t.setName(text);
+                t.setName(text);                                  //übergibt neuen Text
                 break;
             }
         }
@@ -42,7 +42,7 @@ public class HomeController {
 
     @PostMapping("/delete")
     public String deleteTask(@RequestParam long id) {
-        tasks.removeIf(t -> t.getId() == id);
+        tasks.removeIf(t -> t.getId() == id);                //löscht den Task mit der passenden ID
         return "redirect:/";
     }
 

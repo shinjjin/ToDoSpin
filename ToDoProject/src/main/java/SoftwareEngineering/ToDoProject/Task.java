@@ -6,19 +6,23 @@ public class Task {
     private boolean state;
 
     public Task(int i, String text, boolean state) {
-    }
-
-
-    public void setId(long id) {
         this.id = id;
-    }
-
-    public void setName(String name) {
         this.name = name;
-        System.out.println(name);
+        this.state = state;
     }
 
-<<<<<<< Updated upstream
+    public long getId(){
+        return id;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
     public boolean isState() {
         return state;
     }
@@ -26,7 +30,4 @@ public class Task {
     public void setState(boolean state) {
         this.state = state;
     }
-=======
-
->>>>>>> Stashed changes
 }

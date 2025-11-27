@@ -34,7 +34,7 @@
     <div th:each="task : ${tasks}" class="task">                             <!--th:each iteriert später über alle Tasks die vom Controller ins Model gelegt werden-->
       <form th:action="@{/edit}" method="post">                              <!--Formular zum Bearbeiten der Tasks-->
         <input type="hidden" name="id" th:value="${task.id}">                <!--Verstecktes Feld mit Task id-->
-        <input type="text" name="text" th:value="${task.text}">              <!--Eingabefeld mit aktuellem Task Namen--> 
+        <input type="text" name="text" th:value="${task.name}">              <!--Eingabefeld mit aktuellem Task Namen-->
         <button type="submit">Bearbeiten</button>
       </form>
       <form th:action="@{/delete}" method="post">

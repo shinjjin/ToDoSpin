@@ -13,7 +13,7 @@ import java.util.List;
 @Controller
 public class HomeController {
     private List<Task> tasks = new ArrayList<>();
-    private int i = 0;
+    private int currentId = 1;
 
     @GetMapping("/")
     public String home(Model model){
@@ -23,9 +23,26 @@ public class HomeController {
 
     @PostMapping("/add")
     public String addTask(@RequestParam String text){
-        Task task = new Task(i++, text, false);
+        Task task = new Task(currentId++, text, false);
         tasks.add(task);
-        return "home";
+        return "redirect:/";
+    }
+
+    @PostMapping("/edit")
+    public String editTask(@RequestParam long id, @RequestParam String text){
+        for (Task t: tasks) {
+            if (t.getId() == id) {
+                t.setName(text);
+                break;
+            }
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping("/delete")
+    public String deleteTask(@RequestParam long id) {
+        tasks.removeIf(t -> t.getId() == id);
+        return "redirect:/";
     }
 
 }

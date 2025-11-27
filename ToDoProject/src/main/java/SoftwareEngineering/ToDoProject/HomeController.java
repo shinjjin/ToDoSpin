@@ -31,12 +31,10 @@ public class HomeController {
 
     @PostMapping("/edit")
     public String editTask(@RequestParam long id, @RequestParam String text){
-        for (Task t: tasks) {                                     //geht durch Tasks und sucht nach Task mit passender ID
-            if (t.getId() == id) {
-                t.setName(text);                                  //übergibt neuen Text
-                break;
-            }
-        }
+        tasks.stream()                                           //geht durch Tasks und sucht nach Task mit passender ID
+                .filter(t -> t.getId() == id)
+                .findFirst()
+                .ifPresent(t -> t.setName(text));          //übergibt neuen Text
         return "redirect:/";
     }
 

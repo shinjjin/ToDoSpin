@@ -24,6 +24,7 @@ public class HomeController {
     @PostMapping("/add")
     public String addTask(@RequestParam String text){
         Task task = new Task(currentId++, text, false);
+        task.setName(text);
         tasks.add(task);
         return "redirect:/";
     }

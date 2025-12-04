@@ -48,6 +48,13 @@
         <button type="submit">Löschen</button>
       </form>
     </div>
+    <div class="spin-container">
+        <!--<form th:action="@{/spin}" method="post"> -->
+        <form action="/spin" method="post">
+        <button type="submit">Spin</button>
+      </form>
+      <p th:text="${randomtask}"></p>
+    </div>
   </div>
 </body>
 </html>

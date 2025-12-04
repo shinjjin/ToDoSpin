@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,12 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model){
         model.addAttribute("tasks", tasks);     //übergibt die Tasks, damit sie angezeigt werden
+
+        if (!model.containsAttribute("randomtask")){ 
+            model.addAttribute("randomtask", "Random Task: ...");
+        }
         return "home";                                      //zeigt home.html an
+
     }
 
     @PostMapping("/add")
@@ -41,6 +47,14 @@ public class HomeController {
     @PostMapping("/delete")
     public String deleteTask(@RequestParam long id) {
         tasks.removeIf(task -> task.getId() == id);                //löscht den Task mit der passenden ID
+        return "redirect:/";
+    }
+
+    @PostMapping("/spin")
+    public String spinWheel(RedirectAttributes redirectAttributes){
+        Spin spin = new Spin();
+
+        redirectAttributes.addFlashAttribute("randomtask", "Random Task: " + spin.getRandomTask(tasks).getName());
         return "redirect:/";
     }
 }

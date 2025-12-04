@@ -26,7 +26,13 @@
   <div class="task-container">
     <h2>ToDo-List</h2>
 
-    <form th:action="@{/add}" method="post">                                  <!--Formular zum Hinzufügen einer Task-->
+      <th:block th:each="task : ${tasks}">
+          <div th:if="${task.chosen}">
+              <p th:text="${task.name}"></p>
+          </div>
+      </th:block>
+
+    <form th:action="@{/add}" method="post">                                 <!--Formular zum Hinzufügen einer Task-->
       <input type="text" name="text" placeholder="Neue Task..." required>    <!--Eingabefeld-->
       <button type="submit">Hinzufügen</button>
     </form>

@@ -1,16 +1,24 @@
 package SoftwareEngineering.ToDoProject;
 
 public class Task {
-    private long id; //ID
+    private final long id; //ID
     private String name;
     private boolean state;
+    private boolean chosen;
 
-    public Task(int id, String name, boolean state) {
+    public Task(int id, String name) {
         this.id = id;
         this.name = name;
-        this.state = state;
+        this.state = false;
+        this.chosen = false;
     }
 
+    public Task(int id, String name, boolean chosen) {
+        this.id = id;
+        this.name = name;
+        this.state = false;
+        this.chosen = chosen;
+    }
     public long getId(){
         return id;
     }
@@ -29,5 +37,13 @@ public class Task {
 
     public void setState(boolean state) {
         this.state = state;
+    }
+
+    public boolean isChosen() {
+        return chosen;
+    }
+
+    public void setChosen(boolean chosen) {
+        this.chosen = chosen;
     }
 }

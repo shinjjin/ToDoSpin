@@ -23,7 +23,7 @@ public class HomeController {
 
     @PostMapping("/add")
     public String addTask(@RequestParam String text){
-        Task task = new Task(currentId++, text, false);     //erstellt Task und gibt dem Task ID
+        Task task = new Task(currentId++, text);     //erstellt Task und gibt dem Task ID
         task.setName(text);                                      //übergibt den eingegeben Text
         tasks.add(task);                                         //fügt Task in ArrayList ein
         return "redirect:/";
@@ -43,5 +43,4 @@ public class HomeController {
         tasks.removeIf(task -> task.getId() == id);                //löscht den Task mit der passenden ID
         return "redirect:/";
     }
-
 }

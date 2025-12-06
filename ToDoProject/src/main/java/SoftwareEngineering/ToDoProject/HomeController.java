@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller
 public class HomeController {
-    private List<Task> tasks = new ArrayList<>();
+    private List<Task> tasks = new ArrayList<>();           //vom Nutzer eingegebene Tasks
     private int currentId = 1;
 
     @GetMapping("/")
@@ -53,8 +53,10 @@ public class HomeController {
     @PostMapping("/spin")
     public String spinWheel(RedirectAttributes redirectAttributes){
         Spin spin = new Spin();
+        Task randomTask = spin.getRandomTask(tasks);
+        randomTask.setChosen(true);
 
-        redirectAttributes.addFlashAttribute("randomtask", "Random Task: " + spin.getRandomTask(tasks).getName());
+        redirectAttributes.addFlashAttribute("randomtask", "Random Task: " + randomTask.getName());
         return "redirect:/";
     }
 }

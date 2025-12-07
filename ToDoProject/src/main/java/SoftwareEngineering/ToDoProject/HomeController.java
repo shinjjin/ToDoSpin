@@ -13,7 +13,7 @@ import java.util.List;
 @Controller
 public class HomeController {
     private List<Task> tasks = new ArrayList<>();
-    private int currentId = 1;
+    private int currentId = 0;
 
     @GetMapping("/")
     public String home(Model model){

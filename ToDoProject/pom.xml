@@ -28,6 +28,13 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<!-- Java settings -->
+		<maven.compiler.source>23</maven.compiler.source>
+		<maven.compiler.target>23</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Shared version properties -->
+		<mockito.version>5.14.2</mockito.version>
+		<maven-surefire-plugin-version>3.5.1</maven-surefire-plugin-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -69,6 +76,19 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+		</dependency>
+		<!-- Needed to remove the Mockito warnings. -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>${maven-surefire-plugin-version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -77,6 +97,24 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<!-- Removes inline-mock warning when using Mockito -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin-version}</version>
+				<configuration>
+					<!-- Dynamically load mockito as an agent. -->
+					<!-- A Java agent is basically a piece of software that can modify the behavior of the
+                         Java Virtual Machine (JVM) during runtime. In contrast to normal libraries or dependencies that
+                         are called directly by the application, agents "hack" into the JVM and can therefore make more
+                         far-reaching changes (e.g., byte code manipulations). -->
+					<argLine>
+						-javaagent:${user.home}/.m2/repository/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+					</argLine>
+				</configuration>
+			</plugin>
+			
 		</plugins>
 	</build>
 

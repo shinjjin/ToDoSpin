@@ -26,7 +26,7 @@
   <div class="task-container">
     <h2>ToDo-List</h2>
 
-      <th:block th:each="task : ${tasks}">
+      <th:block th:each="task : ${tasks}">                                  <!--Anzeige der Task, die durch Spin ausgewählt wurde-->
           <div th:if="${task.chosen}">
               <p th:text="${task.name}"></p>
           </div>
@@ -47,6 +47,13 @@
         <input type="hidden" name="id" th:value="${task.id}">
         <button type="submit">Löschen</button>
       </form>
+    </div>
+    <div class="spin-container">
+        <!--<form th:action="@{/spin}" method="post"> -->
+        <form action="/spin" method="post">
+        <button type="submit">Spin</button>
+      </form>
+      <p th:text="${randomtask}"></p>
     </div>
   </div>
 </body>

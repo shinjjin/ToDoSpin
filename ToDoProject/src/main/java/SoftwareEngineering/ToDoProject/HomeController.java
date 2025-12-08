@@ -54,12 +54,10 @@ public class HomeController {
     @PostMapping("/spin")
     public String spinWheel(RedirectAttributes redirectAttributes){
         Spin spin = new Spin();
-        Task randomTask = spin.getRandomTask(tasks);
 
-        tasks.stream().forEach(task -> task.setChosen(false));      //alle Tasks werden nicht ausgewählt
-        randomTask.setChosen(true);                                 //damit diese Task allein als ausgewählt angezeigt wird
+        tasks.forEach(task -> task.setChosen(false));           //alle Tasks werden nicht ausgewählt
+        spin.getRandomTask(tasks);                                //damit diese Task allein als ausgewählt angezeigt wird
 
-        redirectAttributes.addFlashAttribute("randomtask", "Random Task: " + randomTask.getName());
         return "redirect:/";
     }
 }

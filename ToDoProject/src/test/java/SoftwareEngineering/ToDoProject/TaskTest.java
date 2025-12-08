@@ -11,7 +11,7 @@ public class TaskTest {
         
         assertEquals(1, task.getId());
         assertEquals("TestTask", task.getName());
-        assertFalse(task.isState());
+        assertFalse(task.isDone());
         assertFalse(task.isChosen());  
     }
 
@@ -21,7 +21,7 @@ public class TaskTest {
         
         assertEquals(2, task.getId());
         assertEquals("ChosenTask", task.getName());
-        assertFalse(task.isState());
+        assertFalse(task.isDone());
         assertTrue(task.isChosen());  
     }
 
@@ -32,8 +32,8 @@ public class TaskTest {
         task.setName("NewName");
         assertEquals("NewName", task.getName());
         
-        task.setState(true);
-        assertTrue(task.isState());
+        task.setDone(true);
+        assertTrue(task.isDone());
 
         task.setChosen(true);
         assertTrue(task.isChosen());  

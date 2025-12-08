@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Spin {
-    public Task getRandomTask(List<Task> tasks){
+    public void getRandomTask(List<Task> tasks){
         int extraTurns = randomNumber(3, 5) * 360;                     //Generiert zusätzliche Drehungen für Visuellen Effekt
         int randomStop = randomNumber(0, 359);                         //Letzte Drehung zum bestimmen der Task
         
@@ -12,7 +12,7 @@ public class Spin {
 
         int taskIndex = randomStop / segmentSize;                              //Findet Index der Task, die dem Segment entspricht
 
-        return tasks.get(taskIndex);
+        tasks.get(taskIndex).setChosen(true);
     }
 
     private int randomNumber(int min, int max){

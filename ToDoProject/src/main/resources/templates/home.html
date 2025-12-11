@@ -26,26 +26,25 @@
 <div class="task-container">
     <h2>ToDo-List</h2>
 
+    <h3>Current Task</h3>
     <th:block th:each="task : ${tasks}">
         <!--Anzeige der Task, die durch Spin ausgewählt wurde-->
-        <div th:if="${task.chosen}">
+        <div th:if="${task.chosen and !task.done}">
             <form th:action="@{/taskDone}" method="post">
-                <label>
-                    <input type="checkbox" th:checked="${task.done}" th:value="${task.id}">
-                </label>
-<!--                <input type="hidden" name="id" th:value="${task.id}">                &lt;!&ndash;Verstecktes Feld mit Task id&ndash;&gt;-->
-<!--                <input type="checkbox" name="done" th:value="${task.done}">-->
+                <input type="hidden" name="id" th:value="${task.id}">                <!--Verstecktes Feld mit Task id-->
+                <button type="submit">Erledigt</button>                               <!--Task wird auf erledigt gesetzt-->
                 <p th:text="${task.name}"></p>
             </form>
 
         </div>
     </th:block>
 
+    <h3>To Do</h3>
     <form th:action="@{/add}" method="post">                                 <!--Formular zum Hinzufügen einer Task-->
         <input type="text" name="text" placeholder="Neue Task..." required>    <!--Eingabefeld-->
         <button type="submit">Hinzufügen</button>
     </form>
-    <!--Ordner zum Anzeigen der eingegebenen Tasks-->
+    <!--Ordner zum Anzeigen der eingegebenen Tasks ohne die, die schon erledigt sind-->
     <div th:each="task : ${tasks}" class="task">
         <div th:if="${!task.done}">
             <!--th:each iteriert später über alle Tasks die vom Controller ins Model gelegt werden-->
@@ -69,8 +68,9 @@
         </form>
     </div>
 
+    <h3>Finished Tasks</h3>
     <th:block th:each="task : ${tasks}">
-        <!--Anzeige der Task, die durch Spin ausgewählt wurde-->
+        <!--Anzeige der Tasks, die erledigt wurden-->
         <div th:if="${task.done}">
             <p th:text="${task.name}"></p>
         </div>

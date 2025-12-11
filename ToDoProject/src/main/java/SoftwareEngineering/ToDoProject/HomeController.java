@@ -60,4 +60,13 @@ public class HomeController {
 
         return "redirect:/";
     }
+
+    @PostMapping("/taskDone")
+    public String taskDone(@RequestParam long id){
+        tasks.stream()                                           //geht durch Tasks und sucht nach Task mit passender ID
+                .filter(task -> task.getId() == id)
+                .findFirst()
+                .ifPresent(task -> task.setDone(true));         //setzt Task auf Done
+        return "redirect:/";
+    }
 }

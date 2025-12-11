@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Home</title>
-    </head>
+<head>
+    <title>Home</title>
+</head>
 <!--<body>
     <h2>ToDo-List</h2>
 
@@ -23,37 +23,58 @@
 </body> -->
 
 <body>
-  <div class="task-container">
+<div class="task-container">
     <h2>ToDo-List</h2>
 
-      <th:block th:each="task : ${tasks}">                                  <!--Anzeige der Task, die durch Spin ausgewählt wurde-->
-          <div th:if="${task.chosen}">
-              <p th:text="${task.name}"></p>
-          </div>
-      </th:block>
+    <th:block th:each="task : ${tasks}">
+        <!--Anzeige der Task, die durch Spin ausgewählt wurde-->
+        <div th:if="${task.chosen}">
+            <form th:action="@{/taskDone}" method="post">
+                <label>
+                    <input type="checkbox" th:checked="${task.done}" th:value="${task.id}">
+                </label>
+<!--                <input type="hidden" name="id" th:value="${task.id}">                &lt;!&ndash;Verstecktes Feld mit Task id&ndash;&gt;-->
+<!--                <input type="checkbox" name="done" th:value="${task.done}">-->
+                <p th:text="${task.name}"></p>
+            </form>
+
+        </div>
+    </th:block>
 
     <form th:action="@{/add}" method="post">                                 <!--Formular zum Hinzufügen einer Task-->
-      <input type="text" name="text" placeholder="Neue Task..." required>    <!--Eingabefeld-->
-      <button type="submit">Hinzufügen</button>
+        <input type="text" name="text" placeholder="Neue Task..." required>    <!--Eingabefeld-->
+        <button type="submit">Hinzufügen</button>
     </form>
-                                                                             <!--Ordner zum Anzeigen der eingegebenen Tasks-->
-    <div th:each="task : ${tasks}" class="task">                             <!--th:each iteriert später über alle Tasks die vom Controller ins Model gelegt werden-->
-      <form th:action="@{/edit}" method="post">                              <!--Formular zum Bearbeiten der Tasks-->
-        <input type="hidden" name="id" th:value="${task.id}">                <!--Verstecktes Feld mit Task id-->
-        <input type="text" name="text" th:value="${task.name}">              <!--Eingabefeld mit aktuellem Task Namen-->
-        <button type="submit">Bearbeiten</button>
-      </form>
-      <form th:action="@{/delete}" method="post">
-        <input type="hidden" name="id" th:value="${task.id}">
-        <button type="submit">Löschen</button>
-      </form>
+    <!--Ordner zum Anzeigen der eingegebenen Tasks-->
+    <div th:each="task : ${tasks}" class="task">
+        <div th:if="${!task.done}">
+            <!--th:each iteriert später über alle Tasks die vom Controller ins Model gelegt werden-->
+            <form th:action="@{/edit}" method="post">
+                <!--Formular zum Bearbeiten der Tasks-->
+                <input type="hidden" name="id" th:value="${task.id}">                <!--Verstecktes Feld mit Task id-->
+                <input type="text" name="text" th:value="${task.name}">
+                <!--Eingabefeld mit aktuellem Task Namen-->
+                <button type="submit">Bearbeiten</button>
+            </form>
+            <form th:action="@{/delete}" method="post">
+                <input type="hidden" name="id" th:value="${task.id}">
+                <button type="submit">Löschen</button>
+            </form>
+        </div>
     </div>
     <div class="spin-container">
         <!--<form th:action="@{/spin}" method="post"> -->
         <form action="/spin" method="post">
-        <button type="submit">Spin</button>
-      </form>
+            <button type="submit">Spin</button>
+        </form>
     </div>
-  </div>
+
+    <th:block th:each="task : ${tasks}">
+        <!--Anzeige der Task, die durch Spin ausgewählt wurde-->
+        <div th:if="${task.done}">
+            <p th:text="${task.name}"></p>
+        </div>
+    </th:block>
+</div>
 </body>
 </html>

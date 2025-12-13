@@ -79,6 +79,25 @@ class HomeControllerTest {
 
     @Test
     void deleteTaskWhenTasklistIsEmpty(){
+    }
+
+    @Test
+    void TaskDoneWithCorrectIdTest(){
+        String expected = "redirect:/";
+
+        homeController.addTask("TestTask");
+        String actual = homeController.taskDone(1);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void TaskDoneWithWrongIdTest(){
+
+    }
+
+    @Test
+    void TaskDoneWhenListIsEmpty(){
 
     }
 }

@@ -22,12 +22,10 @@ public class Spin {
                 task.setChosen(true);
             }
         }
-
     }
 
     private int randomNumber(int min, int max){
         Random rand = new Random();
         return rand.nextInt((max - min) + 1) + min;                            //Liefert zufällige Zahl zwischen min und max
     }
-
 }

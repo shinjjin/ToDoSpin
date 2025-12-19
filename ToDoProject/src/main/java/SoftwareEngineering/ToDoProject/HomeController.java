@@ -69,4 +69,11 @@ public class HomeController {
                 .ifPresent(task -> task.setDone(true));         //setzt Task auf Done
         return "redirect:/";
     }
+
+    @PostMapping("deleteAll")
+    public String deleteAllTasks() {
+        tasks.clear();                                           //löschen aller  Tasks
+        currentId = 0;                                           //setzt ID auf 0 zurück
+        return "redirect:/";
+    }
 }

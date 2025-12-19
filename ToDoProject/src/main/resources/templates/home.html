@@ -35,9 +35,58 @@
             color: #222;
         }
         /* Pointer oben mittig */
-        #pointer { width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-bottom: 28px solid #c0392b; position: absolute; top: -16px; left: calc(50% - 16px); z-index: 20; }
+        #pointer { 
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translate(-50%);
+            width: 36px;
+            height: 20;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+         }
+
+        #pointer svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .spin-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        .spin-center form { pointer-events: auto; }
+
+        .spin-btn--center {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: none;
+            background: #c0392b;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform .12s ease;
+        }
+
+        .spin-btn--center:active { transform: scale(.96);}
+
         .wheel-empty { display:flex; align-items:center; justify-content:center; width:420px; height:420px; border-radius:50%; background:#f8f8f8; color:#666; font-size:16px; }
-        .spin-btn { padding: 0.6rem 1rem; cursor:pointer; }
+        /*.spin-btn { padding: 0.6rem 1rem; cursor:pointer; }*/
 
         /* Responsive: auf kleinen Bildschirmen untereinander anordnen */
         @media (max-width: 900px) {
@@ -46,7 +95,8 @@
             .task-container { order: 1; }
             #wheel-wrapper { width: 320px; height: 320px; }
             .wheel-empty { width:320px; height:320px; }
-            #pointer { border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 20px solid #c0392b; left: calc(50% - 12px); top: -12px; }
+            #pointer { top: -10px; width: 30px; height: 30; }
+            .spin-btn--center { width: 56px; height: 56px; font-size: 14px; }
         }
     </style>
 </head>
@@ -102,11 +152,11 @@
 
     <!-- Wheel-Bereich rechts -->
     <aside id="wheel-area" aria-label="Spinning Wheel Bereich">
-        <div class="spin-container">
+        <!--<div class="spin-container">
             <form id="spinForm" th:action="@{/spin}" method="post">
                 <button id="spinBtn" class="spin-btn" type="submit">Spin</button>
             </form>
-        </div>
+        </div>-->
 
         <!-- Versteckte Daten für JS: alle Tasks als data-Attribute -->
         <div id="task-data" style="display:none;">
@@ -117,14 +167,27 @@
         <!-- Wheel Wrapper -->
         <div id="wheel-wrapper">
             <div id="pointer" aria-hidden="true"></div>
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                    <path fill="#c0392b" d="M13 3h-2v10H5l7 8 7-8h-6z"/>
+                </svg>
+            </div>
+
             <div id="wheel" aria-hidden="true"></div>
+
+            <div class="spin-center" aria-hidden="false">
+                <form id="spinForm" th:action="@{/spin}" method="post">
+                    <input type="hidden" name="chosenId" id="chosenId" value="">
+                    <button id="spinBtn" class="spin-btn--center" type="submit" aria-label="Drehe das Rad">Spin</button>
+                </form>
+            </div>
         </div>
 
     </aside>
 </div>
 
 <script>
-    (function(){
+    document.addEventListener('DOMContentLoaded', function() {
+
         function parseTasks(){
             const nodes = document.querySelectorAll('#task-data .task-data');
             const arr = [];
@@ -149,6 +212,7 @@
         function renderWheel(tasks){
             const wheel = document.getElementById('wheel');
             wheel.innerHTML = '';
+            wheel.style.transform = 'rotate(0deg)';
             const undone = tasks.filter(t => !t.done);
             if(undone.length === 0){
                 wheel.className = 'wheel-empty';
@@ -186,14 +250,33 @@
             const form = document.getElementById('spinForm');
             const btn = document.getElementById('spinBtn');
             const wheel = document.getElementById('wheel');
+            const chosenInput = document.getElementById('chosenId');
+
             btn.addEventListener('click', function(e){
                 const tasks = parseTasks();
                 const undone = tasks.filter(t => !t.done);
                 if(undone.length === 0) return; // standard submit if none
                 e.preventDefault();
+
                 const extra = (Math.floor(Math.random()*3) + 3) * 360; // 3-5 turns
                 const randomStop = Math.floor(Math.random()*360);
                 const deg = extra + randomStop;
+
+                const segment = 360 / undone.length;
+                const pointerOffset = 270;
+                const adjusted = (pointerOffset - (randomStop % 360) + 360) % 360;
+                const taskIndex = Math.floor(adjusted / segment) % undone.length;
+                if (taskIndex < 0) taskIndex += undone.length;
+
+                const chosen = undone[taskIndex];
+
+                if (chosen) {
+                    chosenInput.value = chosen.id;
+                    chosenInput.setAttribute('name', 'chosenId');
+                }else {
+                    chosenInput.removeAttribute('name');
+                }
+
                 wheel.style.transition = 'transform 4s cubic-bezier(.1,.9,.2,1)';
                 wheel.style.transform = `rotate(${deg}deg)`;
                 // after animation, submit form so backend can pick a task (server-side determines chosen)
@@ -207,10 +290,8 @@
         setupSpin();
 
         // Re-render on resize to adjust label radius
-        window.addEventListener('resize', () => {
-            const tasks = parseTasks(); renderWheel(tasks);
+        window.addEventListener('resize', () => { renderWheel(parseTasks()); });
         });
-    })();
 </script>
 </body>
 </html>

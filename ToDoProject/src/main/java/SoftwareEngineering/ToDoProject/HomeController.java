@@ -52,11 +52,24 @@ public class HomeController {
     }
 
     @PostMapping("/spin")
-    public String spinWheel(RedirectAttributes redirectAttributes){
-        Spin spin = new Spin();
+    public String spinWheel(@RequestParam(required = false) String chosenId, RedirectAttributes redirectAttributes){
+        tasks.forEach(task ->task.setChosen(false));
 
-        tasks.forEach(task -> task.setChosen(false));           //alle Tasks werden nicht ausgewählt
-        spin.getRandomTask(tasks);                                //damit diese Task allein als ausgewählt angezeigt wird
+        if (chosenId != null && !chosenId.isBlank()) {
+            try {
+                long id = Long.parseLong(chosenId);
+                tasks.stream()
+                        .filter(task -> task.getId() == id)
+                        .findFirst()
+                        .ifPresent(task -> task.setChosen(true));
+            } catch(NumberFormatException e) {
+                Spin spin = new Spin();
+                spin.getRandomTask(tasks);
+            }
+        }else {
+            Spin spin = new Spin();
+            spin.getRandomTask(tasks);
+        }
 
         return "redirect:/";
     }

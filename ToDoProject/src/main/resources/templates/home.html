@@ -41,7 +41,8 @@
             left: 50%;
             transform: translate(-50%);
             width: 36px;
-            height: 20;
+            height: 36px;
+            z-index: 20;
             pointer-events: none;
             display: flex;
             align-items: center;
@@ -95,7 +96,7 @@
             .task-container { order: 1; }
             #wheel-wrapper { width: 320px; height: 320px; }
             .wheel-empty { width:320px; height:320px; }
-            #pointer { top: -10px; width: 30px; height: 30; }
+            #pointer { top: -10px; width: 30px; height: 30px; }
             .spin-btn--center { width: 56px; height: 56px; font-size: 14px; }
         }
     </style>
@@ -161,12 +162,12 @@
         <!-- Versteckte Daten für JS: alle Tasks als data-Attribute -->
         <div id="task-data" style="display:none;">
             <div class="task-data" th:each="task : ${tasks}"
-                 th:attr="data-name=${task.name},data-done=${task.done},data-id=${task.id},data-chosen=${task.chosen}"></div>
+                 th:attr="data-name=${task.name}, data-done=${task.done}, data-id=${task.id}, data-chosen=${task.chosen}"></div>
         </div>
 
         <!-- Wheel Wrapper -->
         <div id="wheel-wrapper">
-            <div id="pointer" aria-hidden="true"></div>
+            <div id="pointer" aria-hidden="true">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
                     <path fill="#c0392b" d="M13 3h-2v10H5l7 8 7-8h-6z"/>
                 </svg>

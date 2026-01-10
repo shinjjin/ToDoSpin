@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>ToDo & Glücksrad</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body { font-family: sans-serif; background-color: #f4f4f4; }
         .main-layout { display: flex; gap: 40px; padding: 20px; align-items: flex-start; }
@@ -126,14 +127,42 @@
     }
 
     function finishSpin() {
-        const arc = (2 * Math.PI) / tasksForWheel.length;
-        // Berechnung welches Segment oben (270 Grad / 1.5 PI) steht
-        const index = Math.floor(((2 * Math.PI - (currentAngle % (2 * Math.PI)) + 1.5 * Math.PI) % (2 * Math.PI)) / arc);
-        const winner = tasksForWheel[index];
+    const arc = (2 * Math.PI) / tasksForWheel.length;
+    const index = Math.floor(((2 * Math.PI - (currentAngle % (2 * Math.PI)) + 1.5 * Math.PI) % (2 * Math.PI)) / arc);
+    const winner = tasksForWheel[index];
 
-        // Weiterleitung zum Controller, um den Status permanent zu speichern
+    // --- KONFETTI EFFEKT ---
+    const duration = 3 * 1000;
+    const end = Date.now() + duration;
+
+    (function frame() {
+        // Konfetti von links
+        confetti({
+            particleCount: 3,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00']
+        });
+        // Konfetti von rechts
+        confetti({
+            particleCount: 3,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00']
+        });
+
+        if (Date.now() < end) {
+            requestAnimationFrame(frame);
+        }
+    }());
+
+    // Kurze Verzögerung, damit man das Konfetti sieht, bevor der Redirect kommt
+    setTimeout(() => {
         window.location.href = "/chooseFromWheel/" + winner.id;
-    }
+    }, 2000);
+}
 
     loadWheelData();
 </script>

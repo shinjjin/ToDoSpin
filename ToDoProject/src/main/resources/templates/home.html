@@ -1,81 +1,141 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Home</title>
+    <title>ToDo & Glücksrad</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; }
+        .main-layout { display: flex; gap: 40px; padding: 20px; align-items: flex-start; }
+        .task-container { flex: 1; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .wheel-section { flex: 1; text-align: center; position: sticky; top: 20px; }
+
+        .task-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 5px; border-bottom: 1px solid #eee; }
+        .chosen-task { background: #fff3e0; border: 2px solid orange; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .finished-task { color: gray; text-decoration: line-through; }
+
+        #canvas { background: white; border-radius: 50%; border: 5px solid #333; }
+        #pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #333; margin: 0 auto -10px auto; position: relative; z-index: 10; }
+        .spin-btn { margin-top: 20px; padding: 12px 30px; background: orange; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
+    </style>
 </head>
-<!--<body>
-    <h2>ToDo-List</h2>
-
-    <div class="task-container">
-    <div class="task-box" id="taskBox">
-      <h3>Task:</h3>
-      <div id="taskList"></div>
-    </div>
-
-    <input type="text" id="taskInput" class="task-input" placeholder="Neuen Task eingeben...">
-
-    <div class="button-group">
-      <button class="add-btn" onclick="addTask()">Hinzufügen</button>
-      <button class="delete-btn" onclick="deleteTasks()">Löschen</button>
-    </div>
-  </div>
-
-</body> -->
-
 <body>
-<div class="task-container">
-    <h2>ToDo-List</h2>
 
-    <h3>Current Task</h3>
-    <th:block th:each="task : ${tasks}">
-        <!--Anzeige der Task, die durch Spin ausgewählt wurde-->
-        <div th:if="${task.chosen and !task.done}">
+<div class="main-layout">
+    <div class="task-container">
+        <h2>ToDo-Manager</h2>
+
+        <div th:each="task : ${tasks}" th:if="${task.chosen and !task.done}" class="chosen-task">
+            <strong>🎯 Aktuelle Aufgabe:</strong>
+            <p th:text="${task.name}" style="font-size: 1.2rem; margin: 10px 0;"></p>
             <form th:action="@{/taskDone}" method="post">
-                <input type="hidden" name="id" th:value="${task.id}">                <!--Verstecktes Feld mit Task id-->
-                <button type="submit">Erledigt</button>                               <!--Task wird auf erledigt gesetzt-->
-                <p th:text="${task.name}"></p>
+                <input type="hidden" name="id" th:value="${task.id}">
+                <button type="submit" style="background: #28a745; color: white; border: none; padding: 5px 15px; cursor:pointer;">Als erledigt markieren</button>
             </form>
-
         </div>
-    </th:block>
 
-    <h3>To Do</h3>
-    <form th:action="@{/add}" method="post">                                 <!--Formular zum Hinzufügen einer Task-->
-        <input type="text" name="text" placeholder="Neue Task..." required>    <!--Eingabefeld-->
-        <button type="submit">Hinzufügen</button>
-    </form>
-    <!--Ordner zum Anzeigen der eingegebenen Tasks ohne die, die schon erledigt sind-->
-    <div th:each="task : ${tasks}" class="task">
-        <div th:if="${!task.done}">
-            <!--th:each iteriert später über alle Tasks die vom Controller ins Model gelegt werden-->
-            <form th:action="@{/edit}" method="post">
-                <!--Formular zum Bearbeiten der Tasks-->
-                <input type="hidden" name="id" th:value="${task.id}">                <!--Verstecktes Feld mit Task id-->
-                <input type="text" name="text" th:value="${task.name}">
-                <!--Eingabefeld mit aktuellem Task Namen-->
-                <button type="submit">Bearbeiten</button>
+        <h3>Neue Aufgabe</h3>
+        <form th:action="@{/add}" method="post" style="margin-bottom: 20px;">
+            <input type="text" name="text" placeholder="Was ist zu tun?" required style="padding: 8px; width: 250px;">
+            <button type="submit">Hinzufügen</button>
+        </form>
+
+        <h3>Offene Aufgaben</h3>
+        <div th:each="task : ${tasks}" th:if="${!task.done}" class="task-item">
+            <form th:action="@{/edit}" method="post" style="display:flex; gap:5px;">
+                <input type="hidden" name="id" th:value="${task.id}">
+                <input type="text" name="text" th:value="${task.name}" style="border:1px solid #ccc;">
+                <button type="submit">✍️</button>
             </form>
             <form th:action="@{/delete}" method="post">
                 <input type="hidden" name="id" th:value="${task.id}">
-                <button type="submit">Löschen</button>
+                <button type="submit">🗑️</button>
             </form>
         </div>
-    </div>
-    <div class="spin-container">
-        <a href="/wheel" style="text-decoration: none;">
-            <button type="button" style="cursor: pointer; background: orange; border: none; padding: 10px 20px; font-weight: bold;">
-                Glücksrad
-            </button>
-        </a>
-    </div>
 
-    <h3>Finished Tasks</h3>
-    <th:block th:each="task : ${tasks}">
-        <!--Anzeige der Tasks, die erledigt wurden-->
-        <div th:if="${task.done}">
+        <h3 style="margin-top: 30px;">Erledigt</h3>
+        <div th:each="task : ${tasks}" th:if="${task.done}" class="finished-task">
             <p th:text="${task.name}"></p>
         </div>
-    </th:block>
+    </div>
+
+    <div class="wheel-section">
+        <h3>Glücksrad</h3>
+        <div id="pointer"></div>
+        <canvas id="canvas" width="400" height="400"></canvas>
+        <br>
+        <button id="spinBtn" class="spin-btn" onclick="startSpin()">JETZT DREHEN</button>
+    </div>
 </div>
+
+<script th:inline="javascript">
+    let tasksForWheel = [];
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let currentAngle = 0;
+
+    // Lädt nur die offenen Tasks für das Rad
+    async function loadWheelData() {
+        const response = await fetch('/api/tasks/open');
+        tasksForWheel = await response.json();
+        drawWheel();
+    }
+
+    function drawWheel() {
+        if (tasksForWheel.length === 0) {
+            ctx.clearRect(0,0,400,400);
+            ctx.font = "16px Arial";
+            ctx.fillText("Keine Aufgaben verfügbar", 100, 200);
+            return;
+        }
+        const arc = (2 * Math.PI) / tasksForWheel.length;
+        const colors = ["#FF5733", "#33FF57", "#3357FF", "#F333FF", "#FFC300", "#33FFF3"];
+
+        ctx.clearRect(0,0, 400, 400);
+        tasksForWheel.forEach((task, i) => {
+            const angle = currentAngle + i * arc;
+            ctx.beginPath();
+            ctx.fillStyle = colors[i % colors.length];
+            ctx.moveTo(200, 200);
+            ctx.arc(200, 200, 190, angle, angle + arc);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.save();
+            ctx.translate(200, 200);
+            ctx.rotate(angle + arc / 2);
+            ctx.fillStyle = "white";
+            ctx.font = "bold 14px Arial";
+            ctx.fillText(task.name.substring(0, 12), 70, 5);
+            ctx.restore();
+        });
+    }
+
+    function startSpin() {
+        if (tasksForWheel.length < 2) {
+            alert("Du brauchst mindestens 2 Aufgaben im Rad!");
+            return;
+        }
+        let velocity = Math.random() * 0.3 + 0.4;
+        const animate = () => {
+            velocity *= 0.985;
+            currentAngle += velocity;
+            drawWheel();
+            if (velocity > 0.002) requestAnimationFrame(animate);
+            else finishSpin();
+        };
+        animate();
+    }
+
+    function finishSpin() {
+        const arc = (2 * Math.PI) / tasksForWheel.length;
+        // Berechnung welches Segment oben (270 Grad / 1.5 PI) steht
+        const index = Math.floor(((2 * Math.PI - (currentAngle % (2 * Math.PI)) + 1.5 * Math.PI) % (2 * Math.PI)) / arc);
+        const winner = tasksForWheel[index];
+
+        // Weiterleitung zum Controller, um den Status permanent zu speichern
+        window.location.href = "/chooseFromWheel/" + winner.id;
+    }
+
+    loadWheelData();
+</script>
 </body>
 </html>

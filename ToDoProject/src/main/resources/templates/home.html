@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Home</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> <!--Lädt Icon Lib (ist jetzt erstmal temporär die erste die ich gefunden habe)-->
 </head>
 <body>
 <div class="task-container">
@@ -38,11 +41,15 @@
                 <input type="hidden" name="id" th:value="${task.id}">                <!--Verstecktes Feld mit Task id-->
                 <input type="text" name="text" th:value="${task.name}">
                 <!--Eingabefeld mit aktuellem Task Namen-->
-                <button type="submit">Bearbeiten</button>
+                <button type="submit" class="icon-button edit">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
             </form>
             <form th:action="@{/delete}" method="post">
                 <input type="hidden" name="id" th:value="${task.id}">
-                <button type="submit">Löschen</button>
+                <button type="submit" class="icon-button edit">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
             </form>
         </div>
     </div>

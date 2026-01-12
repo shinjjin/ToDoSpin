@@ -93,6 +93,12 @@ public class HomeController {
 
         return "redirect:/"; // Zurück zur Hauptseite
     }
+    @PostMapping("deleteAll")
+    public String deleteAllTasks() {
+        tasks.clear();                                           //löschen aller  Tasks
+        currentId = 0;                                           //setzt ID auf 0 zurück
+        return "redirect:/";
+    }
 
     @GetMapping("/api/tasks/open")
     @ResponseBody

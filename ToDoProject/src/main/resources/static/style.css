@@ -63,7 +63,7 @@ button.delete:hover {
     background-color: #e43c2f;
 }
 
-//Gold Animation wenn ein Task als erledigt abgegeben wird
+/*Gold Animation wenn ein Task als erledigt abgegeben wird*/
 .goldenglow {
     background: linear-gradient(135deg, #ffd700, #ffb700);
     box-shadow:

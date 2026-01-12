@@ -42,11 +42,4 @@ public class TaskService {
                 .findFirst()
                 .ifPresent(t -> t.setDone(true));
     }
-
-    public void chooseRandomTask() {
-        tasks.forEach(t -> t.setChosen(false));
-
-        Spin spin = new Spin();
-        spin.getRandomTask(tasks);
-    }
 }

@@ -73,7 +73,9 @@
             <p th:text="${task.name}" style="font-size: 1.2rem; margin: 10px 0;"></p>
             <form th:action="@{/taskDone}" method="post">
                 <input type="hidden" name="id" th:value="${task.id}">
-                <button type="submit">Als erledigt markieren</button>
+                <button type="button" onclick="completeTaskConfetti(this)">
+                    Als erledigt markieren !
+                </button>
             </form>
         </div>
 
@@ -117,6 +119,41 @@
         <button id="spinBtn" class="spin-btn" onclick="startSpin()">JETZT DREHEN</button>
     </div>
 </div>
+
+
+//Konfetti nach dem ein Task beendet ist
+<script>
+    function completeTaskConfetti(button) {
+        const form = button.closest("form");
+
+        //Gold Animation
+        button.classList.add("goldenglow");
+
+        //Button Position ermitteln
+        const rect = button.getBoundingClientRect();
+
+        //Stelle an der das Konfetti erscheinen soll, basierend auf den Abmessungen des Fensters
+        const x = (rect.left + rect.width / 2) / window.innerWidth;
+        const y = (rect.top + rect.height / 2) / window.innerHeight;
+
+        //Konfetti
+        confetti({
+            particleCount: 25,
+            spread: 180,
+            startVelocity: 20,
+            gravity: 0.9,
+            ticks: 80,
+            origin: { x, y },
+            colors: ['#fbbf0d', '#ff9800', '#ffffff']
+        });
+// Kurze Verzögerung, damit man das Konfetti sieht, bevor der Redirect kommt, genau wie in der anderen Konfetti Methode
+        setTimeout(() => {
+            form.submit();
+        }, 1750);
+    }
+</script>
+
+
 
 <script th:inline="javascript">
     let tasksForWheel = [];

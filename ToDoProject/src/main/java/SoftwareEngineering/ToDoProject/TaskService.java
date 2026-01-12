@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class TaskService {
+public class TaskService implements TaskObserver {
 
     private final List<Task> tasks = new ArrayList<>();
     private int currentId = 0;
@@ -15,16 +15,20 @@ public class TaskService {
         return tasks;
     }
 
-    public void addTask(String text) {
-        Task task = new Task(currentId++, text);
+    public List<Task> getOpenTasks() {
+        return tasks.stream().filter(task -> !task.isDone()).toList();
+    }
+
+    public void addTask(String name) {
+        Task task = new Task(currentId++, name);
         tasks.add(task);
     }
 
-    public void editTask(long id, String newText) {
+    public void editTask(long id, String newName) {
         tasks.stream()
                 .filter(t -> t.getId() == id)
                 .findFirst()
-                .ifPresent(t -> t.setName(newText));
+                .ifPresent(t -> t.setName(newName));
     }
 
     public void deleteTask(long id) {
@@ -42,4 +46,17 @@ public class TaskService {
                 .findFirst()
                 .ifPresent(t -> t.setDone(true));
     }
+
+    @Override
+    public void update(long chosenTaskId) {
+        // Alle Tasks auf "chosen = false" setzen
+        tasks.forEach(t -> t.setChosen(false));
+
+        // Den Gewinner markieren
+        tasks.stream()
+                .filter(t -> t.getId() == chosenTaskId)
+                .findFirst()
+                .ifPresent(t -> t.setChosen(true));
+    }
 }
+

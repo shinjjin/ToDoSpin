@@ -14,10 +14,11 @@ class HomeControllerTest {
     private HomeController homeController;
     @Mock
     private Model model;
+    private TaskService taskService;
 
     @BeforeEach
     void setUp(){
-        homeController = new HomeController();
+        homeController = new HomeController(taskService);
         MockitoAnnotations.openMocks(this);
     }
 
@@ -102,22 +103,5 @@ class HomeControllerTest {
     void TaskDoneWhenListIsEmpty(){
 
     }
-    @Test
-    void spinWheelTest(){
-        RedirectAttributes mockRedirectAttributes = Mockito.mock(RedirectAttributes.class);
-        HomeController hc = new HomeController();
 
-        String expected = "redirect:/";
-
-        for (int i = 0; i < 7; i++) {
-            String id = "t" + i;
-            hc.addTask(id);
-            if (i % 2 == 0) {
-                hc.taskDone(i);
-            }
-        }
-
-//        hc.spinWheel(mockRedirectAttributes);
-//        assertEquals(expected, hc.spinWheel(mockRedirectAttributes));
-    }
 }

@@ -3,8 +3,10 @@ package SoftwareEngineering.ToDoProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -99,5 +101,23 @@ class HomeControllerTest {
     @Test
     void TaskDoneWhenListIsEmpty(){
 
+    }
+    @Test
+    void spinWheelTest(){
+        RedirectAttributes mockRedirectAttributes = Mockito.mock(RedirectAttributes.class);
+        HomeController hc = new HomeController();
+
+        String expected = "redirect:/";
+
+        for (int i = 0; i < 7; i++) {
+            String id = "t" + i;
+            hc.addTask(id);
+            if (i % 2 == 0) {
+                hc.taskDone(i);
+            }
+        }
+
+        hc.spinWheel(mockRedirectAttributes);
+        assertEquals(expected, hc.spinWheel(mockRedirectAttributes));
     }
 }

@@ -2,9 +2,7 @@ package SoftwareEngineering.ToDoProject;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -69,11 +67,42 @@ public class HomeController {
                 .ifPresent(task -> task.setDone(true));         //setzt Task auf Done
         return "redirect:/";
     }
+    // 1. Zeigt das Glücksrad an
+    @GetMapping("/wheel")
+    public String showWheel(Model model) {
+        // Wir filtern hier schon: Nur Tasks, die NICHT erledigt sind, kommen aufs Rad
+        List<Task> openTasks = tasks.stream()
+                .filter(t -> !t.isDone())
+                .toList(); // oder .collect(Collectors.toList()) je nach Java Version
 
+        model.addAttribute("openTasks", openTasks);
+        return "wheel"; // Wir brauchen eine neue Datei wheel.html
+    }
+
+    // 2. Verarbeitet den Gewinner vom Glücksrad
+    @GetMapping("/chooseFromWheel/{id}")
+    public String chooseFromWheel(@PathVariable long id) {
+        // Erstmal alle "chosen" auf false setzen (wie in eurer Spin Klasse)
+        tasks.forEach(task -> task.setChosen(false));
+
+        // Den Gewinner suchen und markieren
+        tasks.stream()
+                .filter(task -> task.getId() == id)
+                .findFirst()
+                .ifPresent(task -> task.setChosen(true));
+
+        return "redirect:/"; // Zurück zur Hauptseite
+    }
     @PostMapping("deleteAll")
     public String deleteAllTasks() {
         tasks.clear();                                           //löschen aller  Tasks
         currentId = 0;                                           //setzt ID auf 0 zurück
         return "redirect:/";
+    }
+
+    @GetMapping("/api/tasks/open")
+    @ResponseBody
+    public List<Task> getOpenTasks() {
+        return tasks.stream().filter(t -> !t.isDone()).toList();
     }
 }

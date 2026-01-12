@@ -1,72 +1,217 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Home</title>
+    <title>ToDo & Glücksrad</title>
     <link rel="stylesheet" th:href="@{/style.css}">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> <!--Lädt Icon Lib (ist jetzt erstmal temporär die erste die ich gefunden habe)-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* Layout-Fix für Nebeneinander-Darstellung */
+        .page-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Verhindert, dass der Main-Style das Layout zerschießt */
+        .task-container {
+            margin: 0 !important;
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .wheel-column {
+            flex: 0.8;
+            max-width: 450px;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            position: sticky;
+            top: 20px;
+        }
+
+        #canvas { width: 100%; height: auto; border-radius: 50%; border: 5px solid #333; }
+        #pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #333; margin: 0 auto -10px auto; position: relative; z-index: 10; }
+
+        .spin-btn {
+            margin-top: 20px;
+            background-color: #fbbf0d !important;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .chosen-task {
+            background: #fff3e0;
+            border: 2px solid #fbbf0d;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-<div class="task-container">
-    <h2>ToDo-List</h2>
 
-    <h3>Current Task</h3>
-    <th:block th:each="task : ${tasks}">
-        <!--Anzeige der Task, die durch Spin ausgewählt wurde-->
-        <div th:if="${task.chosen and !task.done}">
+<div class="page-wrapper">
+
+    <div class="task-container">
+        <h2>ToDo-Manager</h2>
+
+        <div th:each="task : ${tasks}" th:if="${task.chosen and !task.done}" class="chosen-task">
+            <strong>🎯 Aktuelle Aufgabe:</strong>
+            <p th:text="${task.name}" style="font-size: 1.2rem; margin: 10px 0;"></p>
             <form th:action="@{/taskDone}" method="post">
-                <input type="hidden" name="id" th:value="${task.id}">                <!--Verstecktes Feld mit Task id-->
-                <button type="submit">Erledigt</button>                               <!--Task wird auf erledigt gesetzt-->
-                <p th:text="${task.name}"></p>
-            </form>
-
-        </div>
-    </th:block>
-
-    <h3>To Do</h3>
-    <form th:action="@{/add}" method="post">                                 <!--Formular zum Hinzufügen einer Task-->
-        <input type="text" name="text" placeholder="Neue Task..." required>    <!--Eingabefeld-->
-        <button type="submit">Hinzufügen</button>
-    </form>
-    <!-- Löschen aller Tasks -->
-    <form th:action="@{/deleteAll}" method="post">
-        <button type="submit">Alle Tasks löschen</button>
-    </form>
-    <!--Ordner zum Anzeigen der eingegebenen Tasks ohne die, die schon erledigt sind-->
-    <div th:each="task : ${tasks}" class="task">
-        <div th:if="${!task.done}">
-            <!--th:each iteriert später über alle Tasks die vom Controller ins Model gelegt werden-->
-            <form th:action="@{/edit}" method="post">
-                <!--Formular zum Bearbeiten der Tasks-->
-                <input type="hidden" name="id" th:value="${task.id}">                <!--Verstecktes Feld mit Task id-->
-                <input type="text" name="text" th:value="${task.name}">
-                <!--Eingabefeld mit aktuellem Task Namen-->
-                <button type="submit" class="icon-button edit">
-                    <i class="fa-solid fa-pen"></i>
-                </button>
-            </form>
-            <form th:action="@{/delete}" method="post">
                 <input type="hidden" name="id" th:value="${task.id}">
-                <button type="submit" class="icon-button edit">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
+                <button type="submit">Als erledigt markieren</button>
             </form>
         </div>
-    </div>
-    <div class="spin-container">
-        <!--<form th:action="@{/spin}" method="post"> -->
-        <form action="/spin" method="post">
-            <button type="submit">Spin</button>
+
+        <h3>To Do</h3>
+        <form th:action="@{/add}" method="post">
+            <input type="text" name="text" placeholder="Neue Task..." required>
+            <button type="submit">Hinzufügen</button>
         </form>
+
+        <form th:action="@{/deleteAll}" method="post" style="margin-top: 10px;">
+            <button type="submit">Alle Tasks löschen</button>
+        </form>
+
+        <div th:each="task : ${tasks}" class="task">
+            <div th:if="${!task.done}">
+                <form th:action="@{/edit}" method="post">
+                    <input type="hidden" name="id" th:value="${task.id}">
+                    <input type="text" name="text" th:value="${task.name}">
+                    <button type="submit" class="icon-button edit">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                </form>
+                <form th:action="@{/delete}" method="post">
+                    <input type="hidden" name="id" th:value="${task.id}">
+                    <button type="submit" class="icon-button edit">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <h3 style="margin-top: 30px;">Erledigt</h3>
+        <div th:each="task : ${tasks}" th:if="${task.done}" class="task" style="opacity: 0.6; text-decoration: line-through;">
+            <span th:text="${task.name}"></span>
+        </div>
     </div>
 
-    <h3>Finished Tasks</h3>
-    <th:block th:each="task : ${tasks}">
-        <!--Anzeige der Tasks, die erledigt wurden-->
-        <div th:if="${task.done}">
-            <p th:text="${task.name}"></p>
-        </div>
-    </th:block>
+    <div class="wheel-column">
+        <h3>Glücksrad</h3>
+        <div id="pointer"></div>
+        <canvas id="canvas" width="400" height="400"></canvas>
+        <button id="spinBtn" class="spin-btn" onclick="startSpin()">JETZT DREHEN</button>
+    </div>
 </div>
+
+<script th:inline="javascript">
+    let tasksForWheel = [];
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let currentAngle = 0;
+
+    // Lädt nur die offenen Tasks für das Rad
+    async function loadWheelData() {
+        const response = await fetch('/api/tasks/open');
+        tasksForWheel = await response.json();
+        drawWheel();
+    }
+
+    function drawWheel() {
+        if (tasksForWheel.length === 0) {
+            ctx.clearRect(0,0,400,400);
+            ctx.font = "16px Arial";
+            ctx.fillText("Keine Aufgaben", 150, 200);
+            return;
+        }
+        const arc = (2 * Math.PI) / tasksForWheel.length;
+        const colors = ["#FF5733", "#33FF57", "#3357FF", "#F333FF", "#FFC300", "#33FFF3"];
+
+        ctx.clearRect(0,0, 400, 400);
+        tasksForWheel.forEach((task, i) => {
+            const angle = currentAngle + i * arc;
+            ctx.beginPath();
+            ctx.fillStyle = colors[i % colors.length];
+            ctx.moveTo(200, 200);
+            ctx.arc(200, 200, 190, angle, angle + arc);
+            ctx.fill();
+            ctx.stroke();
+            ctx.save();
+            ctx.translate(200, 200);
+            ctx.rotate(angle + arc / 2);
+            ctx.fillStyle = "white";
+            ctx.font = "bold 14px Arial";
+            ctx.fillText(task.name.substring(0, 12), 70, 5);
+            ctx.restore();
+        });
+    }
+
+    function startSpin() {
+        if (tasksForWheel.length < 2) return alert("Min. 2 Tasks nötig!");
+        let velocity = Math.random() * 0.3 + 0.4;
+        const animate = () => {
+            velocity *= 0.985;
+            currentAngle += velocity;
+            drawWheel();
+            if (velocity > 0.002) requestAnimationFrame(animate);
+            else finishSpin();
+        };
+        animate();
+    }
+
+    function finishSpin() {
+    const arc = (2 * Math.PI) / tasksForWheel.length;
+    const index = Math.floor(((2 * Math.PI - (currentAngle % (2 * Math.PI)) + 1.5 * Math.PI) % (2 * Math.PI)) / arc);
+    const winner = tasksForWheel[index];
+
+    // --- KONFETTI EFFEKT ---
+    const duration = 3 * 1000;
+    const end = Date.now() + duration;
+
+    (function frame() {
+        // Konfetti von links
+        confetti({
+            particleCount: 3,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00']
+        });
+        // Konfetti von rechts
+        confetti({
+            particleCount: 3,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00']
+        });
+
+        if (Date.now() < end) {
+            requestAnimationFrame(frame);
+        }
+    }());
+
+    // Kurze Verzögerung, damit man das Konfetti sieht, bevor der Redirect kommt
+    setTimeout(() => {
+        window.location.href = "/chooseFromWheel/" + winner.id;
+    }, 2000);
+}
+
+    loadWheelData();
+</script>
 </body>
 </html>

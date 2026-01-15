@@ -20,10 +20,17 @@ public class TaskService implements TaskObserver {
         return tasks.stream().filter(task -> !task.isDone()).toList();
     }
 
+    public List<Task> getChosenTask(){
+        return tasks.stream()
+                .filter(Task::isChosen)
+                .toList();
+    }
+
     public boolean addTask(String name) {
         if (getOpenTasks().size() >= MAX_TASKS) {
             return false;
         }
+
         Task task = new Task(currentId++, name);
         tasks.add(task);
         return true;
@@ -50,6 +57,11 @@ public class TaskService implements TaskObserver {
                 .filter(t -> t.getId() == id)
                 .findFirst()
                 .ifPresent(t -> t.setDone(true));
+
+        tasks.stream()
+                .filter(t -> t.getId() == id)
+                .findFirst()
+                .ifPresent(t -> t.setChosen(false));
     }
 
     @Override

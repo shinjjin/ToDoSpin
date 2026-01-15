@@ -3,17 +3,15 @@ package SoftwareEngineering.ToDoProject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Controller
 public class HomeController {
 
-    private TaskService taskService;
-    private Wheel wheel;
+    private final TaskService taskService;
+    private final Wheel wheel;
 
     public HomeController(TaskService taskService) {
         this.taskService = taskService;
@@ -74,6 +72,12 @@ public class HomeController {
     @GetMapping("/api/tasks/open")
     @ResponseBody
     public List<Task> getOpenTasks() {
-        return taskService.getAllTasks().stream().filter(t -> !t.isDone()).toList();
+        return taskService.getOpenTasks();
+    }
+
+    @GetMapping("/api/tasks/chosen")
+    @ResponseBody
+    public List<Task> getChosenTask(){
+        return taskService.getChosenTask();
     }
 }

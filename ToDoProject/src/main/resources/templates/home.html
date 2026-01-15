@@ -160,29 +160,35 @@
 
 <script th:inline="javascript">
     let tasksForWheel = [];
+    let chosenTask = [];
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     let currentAngle = 0;
 
-    // Lädt nur die offenen Tasks für das Rad
+    // Lädt nur die offenen und ausgewählten Tasks für das Rad
     async function loadWheelData() {
-        const response = await fetch('/api/tasks/open');
-        tasksForWheel = await response.json();
+        const responseOpenTasks = await fetch('/api/tasks/open');
+        tasksForWheel = await responseOpenTasks.json();
         drawWheel();
 
+        const responseChosenTasks = await fetch('/api/tasks/chosen');
+        chosenTask = await responseChosenTasks.json();
 
-        // Button aktivieren/deaktivieren
+        // Button deaktivieren, wenn weniger als 2 Tasks in der Liste sind oder eine ausgewählt ist
         const spinBtn = document.getElementById("spinBtn");
         if (tasksForWheel.length < 2) {
             spinBtn.disabled = true;
-            spinBtn.style.opacity = "0.5"; // optional für visuelles Feedback
+            spinBtn.style.opacity = "0.5"; // visuelles Feedback
             spinBtn.textContent = "Mindestens 2 Aufgaben nötig";
-        } else {
+        } else if (chosenTask.length > 0) {
+            spinBtn.disabled = true;
+            spinBtn.style.opacity = "0.5";
+            spinBtn.textContent = "Erledige erst deine Aufgabe";
+         }else {
             spinBtn.disabled = false;
             spinBtn.style.opacity = "1";
             spinBtn.textContent = "JETZT DREHEN";
         }
-
     }
 
     function drawWheel() {

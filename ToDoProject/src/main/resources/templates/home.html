@@ -165,6 +165,20 @@
         const response = await fetch('/api/tasks/open');
         tasksForWheel = await response.json();
         drawWheel();
+
+
+        // Button aktivieren/deaktivieren
+        const spinBtn = document.getElementById("spinBtn");
+        if (tasksForWheel.length < 2) {
+            spinBtn.disabled = true;
+            spinBtn.style.opacity = "0.5"; // optional für visuelles Feedback
+            spinBtn.textContent = "Mindestens 2 Aufgaben nötig";
+        } else {
+            spinBtn.disabled = false;
+            spinBtn.style.opacity = "1";
+            spinBtn.textContent = "JETZT DREHEN";
+        }
+
     }
 
     function drawWheel() {
@@ -197,7 +211,6 @@
     }
 
     function startSpin() {
-        if (tasksForWheel.length < 2) return alert("Min. 2 Tasks nötig!");
         let velocity = Math.random() * 0.3 + 0.4;
         const animate = () => {
             velocity *= 0.985;

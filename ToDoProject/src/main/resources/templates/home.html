@@ -81,7 +81,7 @@
 
         <h3>To Do</h3>
         <form th:action="@{/add}" method="post">
-            <input type="text" name="text" placeholder="Neue Task..." required>
+            <input type="text" name="text" placeholder="Neue Task..." required maxlength="28">
             <button type="submit">Hinzufügen</button>
         </form>
 
@@ -93,7 +93,7 @@
             <div th:if="${!task.done}">
                 <form th:action="@{/edit}" method="post">
                     <input type="hidden" name="id" th:value="${task.id}">
-                    <input type="text" name="text" th:value="${task.name}">
+                    <input type="text" name="text" th:value="${task.name}" maxlength="28">
                     <button type="submit" class="icon-button edit">
                         <i class="fa-solid fa-pen"></i>
                     </button>

@@ -10,6 +10,7 @@ public class TaskService implements TaskObserver {
 
     private final List<Task> tasks = new ArrayList<>();
     private int currentId = 0;
+    private static final int MAX_TASKS = 15;
 
     public List<Task> getAllTasks() {
         return tasks;
@@ -19,9 +20,13 @@ public class TaskService implements TaskObserver {
         return tasks.stream().filter(task -> !task.isDone()).toList();
     }
 
-    public void addTask(String name) {
+    public boolean addTask(String name) {
+        if (getOpenTasks().size() >= MAX_TASKS) {
+            return false;
+        }
         Task task = new Task(currentId++, name);
         tasks.add(task);
+        return true;
     }
 
     public void editTask(long id, String newName) {

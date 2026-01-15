@@ -24,6 +24,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model){
         model.addAttribute("tasks", taskService.getAllTasks());     //übergibt die Tasks, damit sie angezeigt werden
+        model.addAttribute("openTasks", taskService.getOpenTasks());
         return "home";                                      //zeigt home.html an
 
     }

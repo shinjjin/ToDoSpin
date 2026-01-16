@@ -1,7 +1,13 @@
 package SoftwareEngineering.ToDoProject;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import org.springframework.stereotype.Component;
+@Component
+@Entity
 public class Task {
-    private final long id; //ID
+    @Id
+    private long id; //ID
     private String name;
     private boolean done;
     private boolean chosen;
@@ -19,6 +25,11 @@ public class Task {
         this.done = false;
         this.chosen = chosen;
     }
+
+    public Task() {
+
+    }
+
     public long getId(){
         return id;
     }

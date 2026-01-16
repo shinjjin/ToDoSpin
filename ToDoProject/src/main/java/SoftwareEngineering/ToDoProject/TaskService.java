@@ -1,5 +1,6 @@
 package SoftwareEngineering.ToDoProject;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,20 +9,23 @@ import java.util.List;
 @Service
 public class TaskService implements TaskObserver {
 
-    private final List<Task> tasks = new ArrayList<>();
+    @Autowired
+    TaskRepository repository;
+
     private int currentId = 0;
     private static final int MAX_TASKS = 15;
 
     public List<Task> getAllTasks() {
-        return tasks;
+        return repository.findAll();
     }
 
     public List<Task> getOpenTasks() {
-        return tasks.stream().filter(task -> !task.isDone()).toList();
+        return repository.findAll().stream()
+                .filter(task -> !task.isDone()).toList();
     }
 
     public List<Task> getChosenTask(){
-        return tasks.stream()
+        return repository.findAll().stream()
                 .filter(Task::isChosen)
                 .toList();
     }
@@ -32,48 +36,44 @@ public class TaskService implements TaskObserver {
         }
 
         Task task = new Task(currentId++, name);
-        tasks.add(task);
+        repository.save(task);
         return true;
     }
 
     public void editTask(long id, String newName) {
-        tasks.stream()
+        repository.findAll().stream()
                 .filter(t -> t.getId() == id)
                 .findFirst()
                 .ifPresent(t -> t.setName(newName));
     }
 
     public void deleteTask(long id) {
-        tasks.removeIf(t -> t.getId() == id);
+        repository.deleteById((int) id);
     }
 
     public void deleteAll() {
-        tasks.clear();
+        repository.deleteAll();
         currentId = 0;
     }
 
     public void markDone(long id) {
-        tasks.stream()
-                .filter(t -> t.getId() == id)
+        repository.findAll().stream()
+                .filter(task -> task.getId() == id)
                 .findFirst()
-                .ifPresent(t -> t.setDone(true));
-
-        tasks.stream()
-                .filter(t -> t.getId() == id)
-                .findFirst()
-                .ifPresent(t -> t.setChosen(false));
+                .ifPresent(task -> {
+                    task.setDone(true);
+                    task.setChosen(false);
+                    repository.save(task);
+                });
     }
 
     @Override
     public void update(long chosenTaskId) {
-        // Alle Tasks auf "chosen = false" setzen
-        tasks.forEach(t -> t.setChosen(false));
-
         // Den Gewinner markieren
-        tasks.stream()
-                .filter(t -> t.getId() == chosenTaskId)
-                .findFirst()
-                .ifPresent(t -> t.setChosen(true));
+        repository.findById((int) chosenTaskId).ifPresent(task -> {
+            task.setChosen(true);
+            repository.save(task);
+        });
     }
 }
 

@@ -82,7 +82,7 @@
         <h3>To Do</h3>
         <form th:action="@{/add}" method="post">
             <input type="text" name="text" placeholder="Neue Task..." required maxlength="28"
-                th:disabled="${openTasks.size() >= 15}">
+                   th:disabled="${openTasks.size() >= 15}">
             <button type="submit" th:disabled="${openTasks.size() >= 15}">Hinzufügen</button>
         </form>
         <div th:if="${openTasks.size() >= 15}" style="color:darkgreen; margin-top: 8px;">
@@ -118,6 +118,9 @@
 
     <div class="wheel-column">
         <h3>Glücksrad</h3>
+        <div id="fpsCounter" style="position: absolute; top: 8px; right: 8px; font-size: 0.9rem; background: rgba(0,0,0,0.06); padding: 4px 8px; border-radius: 4px;">
+            FPS: --
+        </div>
         <div id="pointer"></div>
         <canvas id="canvas" width="400" height="400"></canvas>
         <button id="spinBtn" class="spin-btn" onclick="startSpin()">JETZT DREHEN</button>
@@ -164,6 +167,27 @@
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     let currentAngle = 0;
+    let fps = 0;
+    let lastFPSstamp = null;
+    let fpsUpdateAccumulator = 0;
+
+       function updateFPS(timestamp) {
+        if (!timestamp) return;
+        if (!lastFPSstamp) lastFPSstamp = timestamp;
+        const delta = timestamp - lastFPSstamp;
+        if (delta <= 0) return;
+        lastFPSstamp = timestamp;
+
+        const instant = 1000 / delta;
+        fps = fps ? fps * 0.9 + instant * 0.1 : instant;
+
+        fpsUpdateAccumulator += delta;
+        if (fpsUpdateAccumulator >= 250) { // update Anzeige alle 250ms
+            const el = document.getElementById("fpsCounter");
+            if (el) el.textContent = "FPS: " + Math.round(fps);
+            fpsUpdateAccumulator = 0;
+        }
+    }
 
     // Lädt nur die offenen und ausgewählten Tasks für das Rad
     async function loadWheelData() {
@@ -220,7 +244,32 @@
         });
     }
 
-    function startSpin() {
+        function startSpin() {
+        let velocity = Math.random() * 0.3 + 0.4;
+
+        // Reset FPS-Messung vor jedem Spin
+        lastFPSstamp = null;
+        fps = 0;
+        fpsUpdateAccumulator = 0;
+
+        const animate = (timestamp) => {
+            updateFPS(timestamp);
+
+            velocity *= 0.985;
+            currentAngle += velocity;
+            drawWheel();
+
+            if (velocity > 0.002) {
+                requestAnimationFrame(animate);
+            } else {
+                finishSpin();
+            }
+        };
+
+        requestAnimationFrame(animate);
+    }
+
+    /*function startSpin() {
         let velocity = Math.random() * 0.3 + 0.4;
         const animate = () => {
             velocity *= 0.985;
@@ -230,7 +279,7 @@
             else finishSpin();
         };
         animate();
-    }
+    }*/
 
     function finishSpin() {
     const arc = (2 * Math.PI) / tasksForWheel.length;

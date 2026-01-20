@@ -18,6 +18,14 @@
             padding: 20px;
         }
 
+        /* Erzeugt Scrollbare List von Tasks */
+        .task-list{
+            max-hight: 50px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 5px;
+            }
+
         /* Verhindert, dass der Main-Style das Layout zerschießt */
         .task-container {
             margin: 0 !important;
@@ -92,22 +100,23 @@
         <form th:action="@{/deleteAll}" method="post" style="margin-top: 10px;">
             <button type="submit">Alle Tasks löschen</button>
         </form>
-
-        <div th:each="task : ${tasks}" class="task">
-            <div th:if="${!task.done}">
-                <form th:action="@{/edit}" method="post">
-                    <input type="hidden" name="id" th:value="${task.id}">
-                    <input type="text" name="text" th:value="${task.name}" maxlength="28">
-                    <button type="submit" class="icon-button edit">
-                        <i class="fa-solid fa-pen"></i>
-                    </button>
-                </form>
-                <form th:action="@{/delete}" method="post">
-                    <input type="hidden" name="id" th:value="${task.id}">
-                    <button type="submit" class="icon-button edit">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </form>
+        <div class="task-list">
+            <div th:each="task : ${tasks}" class="task">
+                <div th:if="${!task.done}">
+                    <form th:action="@{/edit}" method="post">
+                        <input type="hidden" name="id" th:value="${task.id}">
+                        <input type="text" name="text" th:value="${task.name}" maxlength="28">
+                        <button type="submit" class="icon-button edit">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                    </form>
+                    <form th:action="@{/delete}" method="post">
+                        <input type="hidden" name="id" th:value="${task.id}">
+                        <button type="submit" class="icon-button edit">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
         <h3 style="margin-top: 30px;">Erledigt</h3>

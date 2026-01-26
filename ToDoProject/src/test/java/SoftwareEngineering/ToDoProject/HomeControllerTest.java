@@ -18,8 +18,8 @@ class HomeControllerTest {
 
     @BeforeEach
     void setUp(){
-        homeController = new HomeController(taskService);
         MockitoAnnotations.openMocks(this);
+        homeController = new HomeController(taskService);
     }
 
     @Test
@@ -42,7 +42,11 @@ class HomeControllerTest {
 
     @Test
     void addEmptyTaskTest(){
+        String expected = "redirect:/";
 
+        String actual = homeController.addTask("");
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -57,12 +61,21 @@ class HomeControllerTest {
 
     @Test
     void editTaskWithWrongIdTest(){
+        String expected = "redirect:/";
 
+        homeController.addTask("aTask");
+        String actual = homeController.editTask(4242,"editedTask");
+
+        assertEquals(expected, actual);
     }
 
     @Test
     void editTaskWhenTasklistIsEmpty(){
+        String expected = "redirect:/";
 
+        String actual = homeController.editTask(1, "editedTask");
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -77,11 +90,21 @@ class HomeControllerTest {
 
     @Test
     void deleteTaskWithWorngIdTest(){
+        String expected = "redirect:/";
 
+        homeController.addTask("TestTask");
+        String actual = homeController.deleteTask(4242);
+
+       assertEquals(expected, actual);
     }
 
     @Test
     void deleteTaskWhenTasklistIsEmpty(){
+        String expected = "redirect:/";
+
+        String actual = homeController.deleteTask(1);
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -96,12 +119,21 @@ class HomeControllerTest {
 
     @Test
     void TaskDoneWithWrongIdTest(){
+        String expected = "redirect:/";
 
+        homeController.addTask("TestTask");
+        String actual = homeController.taskDone(4242);
+
+        assertEquals(expected, actual);
     }
 
     @Test
     void TaskDoneWhenListIsEmpty(){
+        String expected = "redirect:/";
 
+        String actual = homeController.taskDone(1);
+
+        assertEquals(expected, actual);
     }
 
 }

@@ -7,19 +7,19 @@ import org.springframework.stereotype.Component;
 @Entity
 public class Task {
     @Id
-    private long id; //ID
+    private Long id; //ID
     private String name;
     private boolean done;
     private boolean chosen;
 
-    public Task(int id, String name) {
+    public Task(long id, String name) {
         this.id = id;
         this.name = name;
         this.done = false;  //abgehakt oder nicht
         this.chosen = false;
     }
 
-    public Task(int id, String name, boolean chosen) {
+    public Task(long id, String name, boolean chosen) {
         this.id = id;
         this.name = name;
         this.done = false;

@@ -3,7 +3,6 @@ package SoftwareEngineering.ToDoProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -12,7 +11,7 @@ public class TaskService implements TaskObserver {
     @Autowired
     TaskRepository repository;
 
-    private int currentId = 0;
+    private long currentId = 0;
     private static final int MAX_TASKS = 15;
 
     public List<Task> getAllTasks() {
@@ -42,13 +41,16 @@ public class TaskService implements TaskObserver {
 
     public void editTask(long id, String newName) {
         repository.findAll().stream()
-                .filter(t -> t.getId() == id)
+                .filter(t -> Long.valueOf(id).equals(t.getId()))
                 .findFirst()
-                .ifPresent(t -> t.setName(newName));
+                .ifPresent(t -> {
+                    t.setName(newName);
+                    repository.save(t);
+                });
     }
 
     public void deleteTask(long id) {
-        repository.deleteById((int) id);
+        repository.deleteById(id); // Autoboxing zu Long
     }
 
     public void deleteAll() {
@@ -58,7 +60,7 @@ public class TaskService implements TaskObserver {
 
     public void markDone(long id) {
         repository.findAll().stream()
-                .filter(task -> task.getId() == id)
+                .filter(t -> Long.valueOf(id).equals(t.getId()))
                 .findFirst()
                 .ifPresent(task -> {
                     task.setDone(true);
@@ -70,7 +72,7 @@ public class TaskService implements TaskObserver {
     @Override
     public void update(long chosenTaskId) {
         // Den Gewinner markieren
-        repository.findById((int) chosenTaskId).ifPresent(task -> {
+        repository.findById(chosenTaskId).ifPresent(task -> {
             task.setChosen(true);
             repository.save(task);
         });

@@ -5,69 +5,6 @@
     <link rel="stylesheet" th:href="@{/style.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-    <style>
-        /* Layout-Fix für Nebeneinander-Darstellung */
-        .page-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Erzeugt Scrollbare List von Tasks */
-        .task-list{
-            max-hight: 50px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding-right: 5px;
-            }
-
-        /* Verhindert, dass der Main-Style das Layout zerschießt */
-        .task-container {
-            margin: 0 !important;
-            flex: 1;
-            max-width: 600px;
-        }
-
-        .wheel-column {
-            flex: 0.8;
-            max-width: 450px;
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            text-align: center;
-            position: sticky;
-            top: 20px;
-        }
-
-        #canvas { width: 100%; height: auto; border-radius: 50%; border: 5px solid #333; }
-        #pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #333; margin: 0 auto -10px auto; position: relative; z-index: 10; }
-
-        .spin-btn {
-            margin-top: 20px;
-            background-color: #fbbf0d !important;
-            color: white;
-            font-weight: bold;
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        .chosen-task {
-            background: #fff3e0;
-            border: 2px solid #fbbf0d;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-    </style>
 </head>
 <body>
 
@@ -90,7 +27,7 @@
         <h3>To Do</h3>
         <form th:action="@{/add}" method="post">
             <input type="text" name="text" placeholder="Neue Task..." required maxlength="28"
-                th:disabled="${openTasks.size() >= 15}">
+                   th:disabled="${openTasks.size() >= 15}">
             <button type="submit" th:disabled="${openTasks.size() >= 15}">Hinzufügen</button>
         </form>
         <div th:if="${openTasks.size() >= 15}" style="color:darkgreen; margin-top: 8px;">
@@ -100,25 +37,25 @@
         <form th:action="@{/deleteAll}" method="post" style="margin-top: 10px;">
             <button type="submit">Alle Tasks löschen</button>
         </form>
+
         <div class="task-list">
-            <div th:each="task : ${tasks}" class="task">
-                <div th:if="${!task.done}">
-                    <form th:action="@{/edit}" method="post">
-                        <input type="hidden" name="id" th:value="${task.id}">
-                        <input type="text" name="text" th:value="${task.name}" maxlength="28">
-                        <button type="submit" class="icon-button edit">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                    </form>
-                    <form th:action="@{/delete}" method="post">
-                        <input type="hidden" name="id" th:value="${task.id}">
-                        <button type="submit" class="icon-button edit">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </form>
-                </div>
+            <div th:each="task : ${openTasks}" class="task">
+                <form th:action="@{/edit}" method="post">
+                    <input type="hidden" name="id" th:value="${task.id}">
+                    <input type="text" name="text" th:value="${task.name}" maxlength="28">
+                    <button type="submit" class="icon-button edit">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                </form>
+                <form th:action="@{/delete}" method="post">
+                    <input type="hidden" name="id" th:value="${task.id}">
+                    <button type="submit" class="icon-button edit">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </form>
             </div>
         </div>
+
         <h3 style="margin-top: 30px;">Erledigt</h3>
         <div th:each="task : ${tasks}" th:if="${task.done}" class="task" style="opacity: 0.6; text-decoration: line-through;">
             <span th:text="${task.name}"></span>
@@ -133,22 +70,13 @@
     </div>
 </div>
 
-
 <script>
     function completeTaskConfetti(button) {
         const form = button.closest("form");
-
-        //Gold Animation
         button.classList.add("goldenglow");
-
-        //Button Position ermitteln
         const rect = button.getBoundingClientRect();
-
-        //Stelle an der das Konfetti erscheinen soll, basierend auf den Abmessungen des Fensters
         const x = (rect.left + rect.width / 2) / window.innerWidth;
         const y = (rect.top + rect.height / 2) / window.innerHeight;
-
-        //Konfetti
         confetti({
             particleCount: 25,
             spread: 180,
@@ -158,14 +86,11 @@
             origin: { x, y },
             colors: ['#fbbf0d', '#ff9800', '#ffffff']
         });
-// Kurze Verzögerung, damit man das Konfetti sieht, bevor der Redirect kommt, genau wie in der anderen Konfetti Methode
         setTimeout(() => {
             form.submit();
         }, 1750);
     }
 </script>
-
-
 
 <script th:inline="javascript">
     let tasksForWheel = [];
@@ -174,7 +99,6 @@
     const ctx = canvas.getContext("2d");
     let currentAngle = 0;
 
-    // Lädt nur die offenen und ausgewählten Tasks für das Rad
     async function loadWheelData() {
         const responseOpenTasks = await fetch('/api/tasks/open');
         tasksForWheel = await responseOpenTasks.json();
@@ -183,17 +107,16 @@
         const responseChosenTasks = await fetch('/api/tasks/chosen');
         chosenTask = await responseChosenTasks.json();
 
-        // Button deaktivieren, wenn weniger als 2 Tasks in der Liste sind oder eine ausgewählt ist
         const spinBtn = document.getElementById("spinBtn");
         if (tasksForWheel.length < 2) {
             spinBtn.disabled = true;
-            spinBtn.style.opacity = "0.5"; // visuelles Feedback
+            spinBtn.style.opacity = "0.5";
             spinBtn.textContent = "Mindestens 2 Aufgaben nötig";
         } else if (chosenTask.length > 0) {
             spinBtn.disabled = true;
             spinBtn.style.opacity = "0.5";
             spinBtn.textContent = "Erledige erst deine Aufgabe";
-         }else {
+         } else {
             spinBtn.disabled = false;
             spinBtn.style.opacity = "1";
             spinBtn.textContent = "JETZT DREHEN";
@@ -242,42 +165,23 @@
     }
 
     function finishSpin() {
-    const arc = (2 * Math.PI) / tasksForWheel.length;
-    const index = Math.floor(((2 * Math.PI - (currentAngle % (2 * Math.PI)) + 1.5 * Math.PI) % (2 * Math.PI)) / arc);
-    const winner = tasksForWheel[index];
+        const arc = (2 * Math.PI) / tasksForWheel.length;
+        const index = Math.floor(((2 * Math.PI - (currentAngle % (2 * Math.PI)) + 1.5 * Math.PI) % (2 * Math.PI)) / arc);
+        const winner = tasksForWheel[index];
 
-    // --- KONFETTI EFFEKT ---
-    const duration = 3 * 1000;
-    const end = Date.now() + duration;
+        const duration = 3 * 1000;
+        const end = Date.now() + duration;
 
-    (function frame() {
-        // Konfetti von links
-        confetti({
-            particleCount: 3,
-            angle: 60,
-            spread: 55,
-            origin: { x: 0 },
-            colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00']
-        });
-        // Konfetti von rechts
-        confetti({
-            particleCount: 3,
-            angle: 120,
-            spread: 55,
-            origin: { x: 1 },
-            colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00']
-        });
+        (function frame() {
+            confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00'] });
+            confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00'] });
+            if (Date.now() < end) requestAnimationFrame(frame);
+        }());
 
-        if (Date.now() < end) {
-            requestAnimationFrame(frame);
-        }
-    }());
-
-    // Kurze Verzögerung, damit man das Konfetti sieht, bevor der Redirect kommt
-    setTimeout(() => {
-        window.location.href = "/chooseFromWheel/" + winner.id;
-    }, 2000);
-}
+        setTimeout(() => {
+            window.location.href = "/chooseFromWheel/" + winner.id;
+        }, 2000);
+    }
 
     loadWheelData();
 </script>

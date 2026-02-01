@@ -5,6 +5,11 @@ body {
     margin: 0;
     padding: 0;
 }
+/* CSS-Änderung: sorgt dafür, dass 4 Tasks ohne Scrollen sichtbar sind */
+:root {
+    --task-item-height: 56px;
+    --task-gap: 10px;
+}
 
 .task-container {
     max-width: 600px;
@@ -15,17 +20,78 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/*Tasks*/
-.task {
+/* Layout-Fix für Nebeneinander-Darstellung */
+.page-wrapper {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px;
-    margin-bottom: 10px;
-    background: #f9f9f9;
-    border-radius: 5px;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
+/* Erzeugt Scrollbare List von Tasks */
+/* Liste zeigt 4 Einträge, ab dem 5. Eintrag scrollen */
+.task-list {
+    max-height: calc((var(--task-item-height) + var(--task-gap)) * 4);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px;
+}
+
+/* Verhindert, dass der Main-Style das Layout zerschießt */
+.task-container {
+    margin: 0 !important;
+    flex: 1;
+    max-width: 600px;
+}
+
+/* Eintragshöhe sicherstellen */
+.task {
+    min-height: var(--task-item-height);
+    gap: 8px;
+    padding: 10px;
+    margin-bottom: var(--task-gap);
+    background: #f9f9f9;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.wheel-column {
+    flex: 0.8;
+    max-width: 450px;
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    position: sticky;
+    top: 20px;
+}
+
+#canvas { width: 100%; height: auto; border-radius: 50%; border: 5px solid #333; }
+#pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #333; margin: 0 auto -10px auto; position: relative; z-index: 10; }
+
+.spin-btn {
+    margin-top: 20px;
+    background-color: #fbbf0d !important;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.chosen-task {
+    background: #fff3e0;
+    border: 2px solid #fbbf0d;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
 
  /*Buttons*/
 input[type="text"] {

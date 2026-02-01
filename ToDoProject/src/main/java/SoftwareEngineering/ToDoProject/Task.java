@@ -3,23 +3,24 @@ package SoftwareEngineering.ToDoProject;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import org.springframework.stereotype.Component;
+
 @Component
 @Entity
 public class Task {
     @Id
-    private Long id; //ID
+    private Integer id;
     private String name;
     private boolean done;
     private boolean chosen;
 
-    public Task(long id, String name) {
+    public Task(int id, String name) {
         this.id = id;
         this.name = name;
-        this.done = false;  //abgehakt oder nicht
+        this.done = false;
         this.chosen = false;
     }
 
-    public Task(long id, String name, boolean chosen) {
+    public Task(int id, String name, boolean chosen) {
         this.id = id;
         this.name = name;
         this.done = false;
@@ -27,10 +28,9 @@ public class Task {
     }
 
     public Task() {
-
     }
 
-    public long getId(){
+    public Integer getId(){
         return id;
     }
 

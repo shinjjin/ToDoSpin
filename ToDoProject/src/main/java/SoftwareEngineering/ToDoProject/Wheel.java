@@ -16,7 +16,7 @@ public class Wheel implements WheelSubject{
     }
 
     @Override
-    public void notifyObserver(long chosenTaskId) {
+    public void notifyObserver(int chosenTaskId) {
         for (TaskObserver observer : observers) {
             observer.update(chosenTaskId);
         }

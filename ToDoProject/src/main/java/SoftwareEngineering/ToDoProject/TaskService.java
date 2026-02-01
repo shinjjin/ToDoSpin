@@ -11,7 +11,7 @@ public class TaskService implements TaskObserver {
     @Autowired
     TaskRepository repository;
 
-    private long currentId = 0;
+    private int currentId = 0;
     private static final int MAX_TASKS = 15;
 
     public List<Task> getAllTasks() {
@@ -39,9 +39,9 @@ public class TaskService implements TaskObserver {
         return true;
     }
 
-    public void editTask(long id, String newName) {
+    public void editTask(int id, String newName) {
         repository.findAll().stream()
-                .filter(t -> Long.valueOf(id).equals(t.getId()))
+                .filter(t -> Integer.valueOf(id).equals(t.getId()))
                 .findFirst()
                 .ifPresent(t -> {
                     t.setName(newName);
@@ -49,8 +49,8 @@ public class TaskService implements TaskObserver {
                 });
     }
 
-    public void deleteTask(long id) {
-        repository.deleteById(id); // Autoboxing zu Long
+    public void deleteTask(int id) {
+        repository.deleteById(id);
     }
 
     public void deleteAll() {
@@ -58,9 +58,9 @@ public class TaskService implements TaskObserver {
         currentId = 0;
     }
 
-    public void markDone(long id) {
+    public void markDone(int id) {
         repository.findAll().stream()
-                .filter(t -> Long.valueOf(id).equals(t.getId()))
+                .filter(t -> Integer.valueOf(id).equals(t.getId()))
                 .findFirst()
                 .ifPresent(task -> {
                     task.setDone(true);
@@ -70,8 +70,7 @@ public class TaskService implements TaskObserver {
     }
 
     @Override
-    public void update(long chosenTaskId) {
-        // Den Gewinner markieren
+    public void update(int chosenTaskId) {
         repository.findById(chosenTaskId).ifPresent(task -> {
             task.setChosen(true);
             repository.save(task);

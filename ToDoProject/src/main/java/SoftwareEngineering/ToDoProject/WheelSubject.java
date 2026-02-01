@@ -5,5 +5,5 @@ public interface WheelSubject {
 
     void removeObserver(TaskObserver observer);
 
-    void notifyObserver(long chosenTaskId);
+    void notifyObserver(int chosenTaskId);
 }

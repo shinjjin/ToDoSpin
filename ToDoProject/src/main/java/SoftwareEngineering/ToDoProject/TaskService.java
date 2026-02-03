@@ -54,8 +54,9 @@ public class TaskService implements TaskObserver {
     }
 
     public void deleteAll() {
-        repository.deleteAll();
-        currentId = 0;
+        repository.findAll().stream()
+                .filter(task -> !task.isDone())
+                .forEach(repository::delete);
     }
 
     public void markDone(int id) {

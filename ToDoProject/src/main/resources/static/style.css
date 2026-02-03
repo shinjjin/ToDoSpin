@@ -32,7 +32,6 @@ body {
 }
 
 /* Erzeugt Scrollbare List von Tasks */
-/* Liste zeigt 4 Einträge, ab dem 5. Eintrag scrollen */
 .task-list {
     max-height: calc((var(--task-item-height) + var(--task-gap)) * 4);
     overflow-y: auto;
@@ -56,6 +55,37 @@ body {
     background: #f9f9f9;
     border-radius: 5px;
     box-sizing: border-box;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    max-width: 600px;
+}
+
+/* separater Container für erledigte Tasks */
+.done-container {
+    background: white;
+    padding: 18px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    /* zeigt  3 Einträge, bei mehr erscheint eine Scrollbar */
+    max-height: calc((var(--task-item-height) + var(--task-gap)) * 3 + 72px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/*Abstand*/
+.done-container .task {
+    background: #fafafa;
+    margin-bottom: 8px;
 }
 
 .wheel-column {

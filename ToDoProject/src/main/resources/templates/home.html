@@ -7,51 +7,59 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
+<header class="site-header" aria-hidden="true"></header>
 
 <div class="page-wrapper">
+    <!--<h1 class="page-title">Wheel of Task</h1>-->
 
     <div class="left-column">
         <div class="task-container">
-            <h2>ToDo-Manager</h2>
 
             <div th:each="task : ${tasks}" th:if="${task.chosen and !task.done}" class="chosen-task">
                 <strong>🎯 Aktuelle Aufgabe:</strong>
                 <p th:text="${task.name}" style="font-size: 1.2rem; margin: 10px 0;"></p>
                 <form th:action="@{/taskDone}" method="post">
                     <input type="hidden" name="id" th:value="${task.id}">
-                    <button type="button" onclick="completeTaskConfetti(this)">
+                    <button type="button" onclick="completeTaskConfetti(this)" class="btn-primary">
                         Als erledigt markieren !
                     </button>
                 </form>
             </div>
+            <div class="controls">
+                <form id="addForm" th:action="@{/add}" method="post" class="add-form">
+                    <input type="text" name="text" placeholder="Neue Task..." required maxlength="28"
+                           th:disabled="${openTasks.size() >= 15}" class="add-input">
+                </form>
+                <div class="button-group">
+                    <button type="submit" form="addForm" th:disabled="${openTasks.size() >= 15}" class="btn-primary">
+                        Hinzufügen
+                    </button>
 
-            <h3>To Do</h3>
-            <form th:action="@{/add}" method="post">
-                <input type="text" name="text" placeholder="Neue Task..." required maxlength="28"
-                       th:disabled="${openTasks.size() >= 15}">
-                <button type="submit" th:disabled="${openTasks.size() >= 15}">Hinzufügen</button>
-            </form>
+                    <form th:action="@{/deleteAll}" method="post" class="delete-all-form">
+                        <button type="submit" class="btn-danger">
+                            Alle Tasks löschen
+                        </button>
+                    </form>
+                </div>
+            </div>
+
             <div th:if="${openTasks.size() >= 15}" style="color:darkgreen; margin-top: 8px;">
                 Maximale Anzahl erreicht
             </div>
 
-            <form th:action="@{/deleteAll}" method="post" style="margin-top: 10px;">
-                <button type="submit">Alle Tasks löschen</button>
-            </form>
-
             <div class="task-list">
                 <div th:each="task : ${openTasks}" class="task">
-                    <form th:action="@{/edit}" method="post">
+                    <form th:action="@{/edit}" method="post" class="edit-form">
                         <input type="hidden" name="id" th:value="${task.id}">
-                        <input type="text" name="text" th:value="${task.name}" maxlength="28">
+                        <input type="text" name="text" th:value="${task.name}" maxlength="28" class="edit-input">
                         <button type="submit" class="icon-button edit">
-                            <i class="fa-solid fa-pen"></i>
+                            <img th:src="@{/icons/Edit.svg}" alt="Bearbeiten" class="icon-img">
                         </button>
                     </form>
-                    <form th:action="@{/delete}" method="post">
+                    <form th:action="@{/delete}" method="post" class="delete-form">
                         <input type="hidden" name="id" th:value="${task.id}">
                         <button type="submit" class="icon-button edit">
-                            <i class="fa-solid fa-trash"></i>
+                            <img th:src="@{/icons/Bin.svg}" alt="Löschen" class="icon-img">
                         </button>
                     </form>
                 </div>
@@ -64,9 +72,7 @@
             </div>
         </div>
     </div>
-
     <div class="wheel-column">
-        <h3>Glücksrad</h3>
         <div id="pointer"></div>
         <canvas id="canvas" width="400" height="400"></canvas>
         <button id="spinBtn" class="spin-btn" onclick="startSpin()">JETZT DREHEN</button>

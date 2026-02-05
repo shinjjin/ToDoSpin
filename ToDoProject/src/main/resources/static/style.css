@@ -1,23 +1,45 @@
-/*Main Body (muss noch angepasst werden, ist jetzt noch nicht wirklich flexibel)*/
+:root {
+    --task-item-height: 56px;
+    --task-gap: 6px;
+    --done-gap: 6px;
+    --done-indent: 12px;
+    --header-height: 48px;
+    --header-bg: #ffffff;
+    --header-border: #e9ecef;
+    --header-gap: 30px;
+    --gutter: 20px;
+
+    --left-max-width: 600px;
+    --wheel-fixed-width: 520px;
+}
+
+:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f6f8;
     margin: 0;
     padding: 0;
-}
-/* CSS-Änderung: sorgt dafür, dass 4 Tasks ohne Scrollen sichtbar sind */
-:root {
-    --task-item-height: 56px;
-    --task-gap: 10px;
+    padding-top: calc(var(--header-height) + var(--header-gap));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-.task-container {
-    max-width: 600px;
-    margin: 40px auto;
-    background: white;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--header-border);
+    z-index: 1000;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 
 /* Layout-Fix für Nebeneinander-Darstellung */
@@ -25,10 +47,41 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 20px;
+    gap: var(--gutter);
     max-width: 1200px;
     margin: 0 auto;
+
     padding: 20px;
+    flex-wrap: wrap;
+}
+
+.page-title {
+    width: 100%;
+    text-align: center;
+    margin: 4px 0 28px
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.1;
+}
+
+/* Linke Spalte */
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1 1 var(--left-max-width);
+    max-width: var(--left-max-width);
+    min-width: 260px;
+}
+
+.task-container {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Erzeugt Scrollbare List von Tasks */
@@ -39,58 +92,124 @@ body {
     padding-right: 5px;
 }
 
-/* Verhindert, dass der Main-Style das Layout zerschießt */
-.task-container {
-    margin: 0 !important;
-    flex: 1;
-    max-width: 600px;
+.task {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--task-item-height);
+    padding: 3px;
+    margin-bottom: var(--task-gap);
+    min-height: var(--task-item-height);
+    background: transparent;
+    border-radius: 5px;
+    min-width: 0;
 }
 
-/* Eintragshöhe sicherstellen */
-.task {
-    min-height: var(--task-item-height);
+.edit-form {
+    display: flex;
+    align-items: center;
     gap: 8px;
-    padding: 10px;
-    margin-bottom: var(--task-gap);
-    background: #f9f9f9;
-    border-radius: 5px;
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+}
+
+.edit-input,
+input[type="text"].edit-input {
+    flex: 1;
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+}
+
+input[type="text"] {
+    padding: 8px;
+    width: 100%;
+    box-sizing:
+    border-box;
+}
+
+.delete-form { flex: 0 0 auto; display: flex; margin: 0; }
+
+.icon-button,
+button.icon-button,
+button.edit,
+button.delete {
+    background: transparent !important;
+    border: 2px solid transparent;
+    padding: 6px 8px;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: none;
     box-sizing: border-box;
 }
 
-.left-column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    flex: 1;
-    max-width: 600px;
+.icon-img {
+    width: 24px;
+    height: 24px;
+    display: block;
+    object-fit: contain;
 }
 
-/* separater Container für erledigte Tasks */
+.icon-button.edit:hover,
+.icon-button.delete:hover,
+button.delete:hover,
+button.edit:hover {
+    background: transparent;
+    border-color: rgba(251,191,13,0.95);
+    outline: none;
+    box-shadow: 0 0 0 6px rgba(251,191,13,0.06);
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.goldenglow {
+    background: linear-gradient(135deg, #ffd700, #ffb700);
+    box-shadow: 0 0 8px rgba(255,193,7,0.6);
+    animation: goldPulse 0.3s ease-out;
+}
+@keyframes goldPulse { 0%{ transform: scale(1);}50%{ transform: scale(1.05);}100%{ transform: scale(1);} }
+
 .done-container {
     background: white;
-    padding: 18px;
+    padding: 14px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.06);
-
     display: flex;
     flex-direction: column;
-    gap: 10px;
-
-    /* zeigt  3 Einträge, bei mehr erscheint eine Scrollbar */
-    max-height: calc((var(--task-item-height) + var(--task-gap)) * 3 + 72px);
+    gap: var(--done-gap);
+    max-height: calc((var(--task-item-height) + var(--task-gap)) * 3 + 64px);
     overflow-y: auto;
     overflow-x: hidden;
+    padding-right: 5px;
+    width: 100%;
 }
 
-/*Abstand*/
 .done-container .task {
-    background: #fafafa;
-    margin-bottom: 8px;
+    background: transparent;
+    margin-bottom: 4px;
+    padding-left: var(--done-indent);
+        align-items: center;
+        min-height: calc(var(--task-item-height) - 8px);
 }
 
 .wheel-column {
-    flex: 0.8;
-    max-width: 450px;
+    flex: 0 0 var(--wheel-fixed-width);
+    max-width: var(--wheel-fixed-width);
+    min-width: 300px;
     background: white;
     padding: 25px;
     border-radius: 8px;
@@ -98,10 +217,29 @@ body {
     text-align: center;
     position: sticky;
     top: 20px;
+    box-sizing: border-box;
 }
 
-#canvas { width: 100%; height: auto; border-radius: 50%; border: 5px solid #333; }
-#pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #333; margin: 0 auto -10px auto; position: relative; z-index: 10; }
+#canvas {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    border: 5px solid #333;
+    display: block;
+    margin: 0 auto;
+    max-width: var(--wheel-fixed-width);
+}
+
+#pointer {
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 25px solid #333;
+    margin: 0 auto -10px;
+    position: relative;
+    z-index: 10;
+}
 
 .spin-btn {
     margin-top: 20px;
@@ -123,66 +261,136 @@ body {
     margin-bottom: 20px;
 }
 
- /*Buttons*/
-input[type="text"] {
+/* --- Breakpoints --- */
+@media (max-width: 1024px) {
+    .left-column { max-width: 520px; }
+    .wheel-column { min-width: 320px; max-width: 480px; flex: 0 0 480px; } /* angepasst für mittlere Breite */
+}
+
+/* Ab hier: bei kleineren Bildschirmen stapeln (Wheel unter Tasks) */
+@media (max-width: 720px) {
+    .page-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 12px;
+        gap: 14px;
+    }
+    .left-column {
+        width: 100%;
+        max-width: none;
+        flex: 1 1 auto;
+        order: 1;
+    }
+    .wheel-column {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        order: 2;
+        position: relative;
+        top: 0;
+        padding: 18px;
+    }
+    /* Canvas behält Desktop-Proportion bis zu kleineren Displays */
+    #canvas { max-width: var(--wheel-fixed-width); }
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    margin-bottom: 18px;
+    min-width: 0;
+}
+
+.add-form {
+    flex: 1;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    min-width: 0;
+    margin: 0;
+}
+
+.add-form .add-input {
+    flex: 1;
+    min-width: 0;
     padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     width: 100%;
     box-sizing: border-box;
 }
 
-button {
+.button-group {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.button-group .delete-all-form { margin: 0; }
+
+.btn-primary {
     padding: 8px 12px;
-    border: none;
     border-radius: 3px;
-    background-color: #239344;  /*Farbe des Button*/
-    color: white;
+    background-color: green;
+    color: #fff;
+    border: none;
     cursor: pointer;
+    box-sizing: border-box;
+}
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-danger {
+    padding: 8px 12px;
+    border-radius: 3px;
+    background-color: green;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-sizing: border-box;
 }
 
-button:hover {
-    background-color: #43a047;  /*Farbe beim hovern über dem Button*/
-}
+/* Sehr kleine Displays: Wheel wird kompakter */
+@media (max-width: 480px) {
+    :root { --header-height: 56px; }
+    .page-wrapper { padding: 10px; gap: 12px; }
+    .page-title { font-size: 1.25rem; margin: 6px 0 18px; }
 
-button.edit {
-    background-color: #fbbf0d;
-}
+    .task { flex-direction: column; align-items: stretch; }
+    .edit-form { width: 100%; flex-direction: column; gap: 8px; }
+    .delete-form { justify-content: flex-end; }
 
-button.edit:hover {
-    background-color: #d32f2f;
-}
+    .icon-img { width: 12px; height: 12px; }
+    .icon-button, button.icon-button, button.edit, button.delete { width: 28px; height: 28px; padding: 3px; }
 
-button.delete {
-    background-color: #e43c2f;
-}
+    .wheel-column { padding: 12px; }
+    #canvas { max-width: 360px; border-width: 4px; } /* bleibt kompakt auf sehr kleinen Geräten */
 
-button.delete:hover {
-    background-color: #e43c2f;
-}
-
-/*Gold Animation wenn ein Task als erledigt abgegeben wird*/
-.goldenglow {
-    background: linear-gradient(135deg, #ffd700, #ffb700);
-    box-shadow:
-        0 0 8px rgba(255, 215, 0, 0.8),
-        0 0 16px rgba(255, 193, 7, 0.6);
-    animation: goldPulse 0.3s ease-out;
-}
-
-@keyframes goldPulse {
-    0% {
-        transform: scale(1);
-        box-shadow:
-            0 0 0 rgba(255, 215, 0, 0);
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        margin-bottom: 12px;
     }
-    50% {
-        transform: scale(1.05);
-        box-shadow:
-            0 0 14px rgba(255, 215, 0, 1),
-            0 0 28px rgba(255, 193, 7, 0.8);
+    .button-group {
+        margin-left: 0;
+        justify-content: space-between;
+        width: 100%;
     }
-    100% {
-        transform: scale(1);
-        box-shadow:
-            0 0 8px rgba(255, 215, 0, 0.6);
-    }
+    .add-form { width: 100%; }
+    .add-form .add-input { width: 100%; min-width: 0; }
+
+}
+
+/* Accessibility */
+button:focus, .icon-button:focus, input:focus {
+    outline: 3px solid rgba(59,130,246,0.2);
+    outline-offset: 2px;
+}
+
+/* Utility */
+.hidden-mobile { display: inline; }
+@media (max-width: 480px) { .hidden-mobile { display: none; }
 }

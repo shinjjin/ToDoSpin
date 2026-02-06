@@ -7,14 +7,14 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-<header class="site-header" aria-hidden="true"></header>
+<header class="site-header" aria-hidden="true">
+    <img th:src="@{/icons/coins.svg}" alt="Coins" class="header-icon" title="Coins">
+</header>
 
 <div class="page-wrapper">
-    <!--<h1 class="page-title">Wheel of Task</h1>-->
 
     <div class="left-column">
         <div class="task-container">
-
             <div th:each="task : ${tasks}" th:if="${task.chosen and !task.done}" class="chosen-task">
                 <strong>🎯 Aktuelle Aufgabe:</strong>
                 <p th:text="${task.name}" style="font-size: 1.2rem; margin: 10px 0;"></p>
@@ -34,7 +34,6 @@
                     <button type="submit" form="addForm" th:disabled="${openTasks.size() >= 15}" class="btn-primary">
                         Hinzufügen
                     </button>
-
                     <form th:action="@{/deleteAll}" method="post" class="delete-all-form">
                         <button type="submit" class="btn-danger">
                             Alle Tasks löschen
@@ -42,11 +41,9 @@
                     </form>
                 </div>
             </div>
-
             <div th:if="${openTasks.size() >= 15}" style="color:darkgreen; margin-top: 8px;">
                 Maximale Anzahl erreicht
             </div>
-
             <div class="task-list">
                 <div th:each="task : ${openTasks}" class="task">
                     <form th:action="@{/edit}" method="post" class="edit-form">
@@ -66,16 +63,25 @@
             </div>
         </div>
         <div class="done-container">
-            <h3>Erledigt</h3>
-            <div th:each="task : ${tasks}" th:if="${task.done}" class="task done-item" style="opacity: 0.6; text-decoration: line-through;">
-                <span th:text="${task.name}"></span>
+            <h3>Erledigte Aufgaben</h3>
+            <div class="done-scroll">
+                <div th:each="task : ${tasks}" th:if="${task.done}" class="task done-item" style="opacity: 0.6; text-decoration: line-through;">
+                    <span th:text="${task.name}"></span>
+                </div>
             </div>
         </div>
     </div>
     <div class="wheel-column">
-        <div id="pointer"></div>
-        <canvas id="canvas" width="400" height="400"></canvas>
-        <button id="spinBtn" class="spin-btn" onclick="startSpin()">JETZT DREHEN</button>
+        <img th:src="@{/icons/Pointer.png}" alt="Pointer" id="pointer" class="pointer-img">
+        <div class="wheel-frame">
+            <img th:src="@{/icons/Wheel.png}" alt="" class="wheel-bg">
+            <canvas id="canvas" width="400" height="400"></canvas>
+        </div>
+        <span id="spinWrapper" class="spin-wrapper" title="JETZT DREHEN">
+            <button id="spinBtn" class="spin-btn" onclick="startSpin()" aria-label="Jetzt drehen">
+                <img th:src="@{/icons/Spin2.png}" alt="Drehen" class="spin-icon">
+            </button>
+        </span>
     </div>
 </div>
 
@@ -106,6 +112,8 @@
     let chosenTask = [];
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
+    const WHEEL_STROKE_COLOR = '#FDEED5';
+    const WHEEL_LINE_WIDTH = 2;
     let currentAngle = 0;
 
     async function loadWheelData() {
@@ -117,18 +125,26 @@
         chosenTask = await responseChosenTasks.json();
 
         const spinBtn = document.getElementById("spinBtn");
+        const spinWrapper = document.getElementById("spinWrapper"); // Wrapper referenz
+
         if (tasksForWheel.length < 2) {
             spinBtn.disabled = true;
             spinBtn.style.opacity = "0.5";
-            spinBtn.textContent = "Mindestens 2 Aufgaben nötig";
+            spinBtn.setAttribute('aria-label', "Mindestens 2 Aufgaben nötig");
+            spinBtn.title = "Mindestens 2 Aufgaben nötig";
+            spinWrapper.title = "Mindestens 2 Aufgaben nötig"; // Tooltip am Wrapper setzen
         } else if (chosenTask.length > 0) {
             spinBtn.disabled = true;
             spinBtn.style.opacity = "0.5";
-            spinBtn.textContent = "Erledige erst deine Aufgabe";
-         } else {
+            spinBtn.setAttribute('aria-label', "Erledige erst deine Aufgabe");
+            spinBtn.title = "Erledige erst deine Aufgabe";
+            spinWrapper.title = "Erledige erst deine Aufgabe"; // Tooltip am Wrapper setzen
+        } else {
             spinBtn.disabled = false;
             spinBtn.style.opacity = "1";
-            spinBtn.textContent = "JETZT DREHEN";
+            spinBtn.setAttribute('aria-label', "JETZT DREHEN");
+            spinBtn.title = "JETZT DREHEN";
+            spinWrapper.title = "JETZT DREHEN"; // Tooltip am Wrapper setzen
         }
     }
 
@@ -140,7 +156,10 @@
             return;
         }
         const arc = (2 * Math.PI) / tasksForWheel.length;
-        const colors = ['#d23d2d', "#6e433d", '#f5c065', '#31603d', '#f8eecb'];
+        const colors = ['#BD1E24', "white"];
+
+        ctx.lineWidth = WHEEL_LINE_WIDTH;
+        ctx.strokeStyle = WHEEL_STROKE_COLOR;
 
         ctx.clearRect(0,0, 400, 400);
         tasksForWheel.forEach((task, i) => {
@@ -154,8 +173,8 @@
             ctx.save();
             ctx.translate(200, 200);
             ctx.rotate(angle + arc / 2);
-            ctx.fillStyle = "white";
-            ctx.font = "bold 14px Arial";
+            ctx.fillStyle = "#390703";
+            ctx.font = "14px Arial";
             ctx.fillText(task.name.substring(0, 12), 70, 5);
             ctx.restore();
         });

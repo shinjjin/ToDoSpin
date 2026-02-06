@@ -1,16 +1,24 @@
 :root {
     --task-item-height: 56px;
-    --task-gap: 6px;
-    --done-gap: 6px;
-    --done-indent: 12px;
+    --task-gap: 0px;
+    --done-gap: 0px;
+    --done-indent: 20px;
     --header-height: 48px;
-    --header-bg: #ffffff;
-    --header-border: #e9ecef;
+    --header-bg: #8F1306;
+    --header-border: #711005;
     --header-gap: 30px;
     --gutter: 20px;
+    --task-bg-alpha: 0.7;
+    --done-bg-alpha: 0.8;
+    --scroll-track: rgba(24, 6, 6, 0.18);
+    --scroll-thumb: rgba(253, 238, 213, 0.95);
+    --scroll-thumb-hover: rgba(160, 20, 20, 1);
+    --scroll-width: 10px;
 
     --left-max-width: 600px;
     --wheel-fixed-width: 520px;
+    --wheel-bg-scale: 0.98;
+    --wheel-bg-offset-y: 3px;
 }
 
 :focus:not(:focus-visible) {
@@ -18,11 +26,24 @@
     box-shadow: none;
 }
 
+@font-face {
+    font-family: 'CasinoFlat';
+    src: url('/fonts/CasinoFlat.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
+    background-image: url('/icons/BG.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #7C1105;
     margin: 0;
     padding: 0;
     padding-top: calc(var(--header-height) + var(--header-gap));
@@ -31,6 +52,10 @@ body {
 }
 
 .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 18px;
     position: fixed;
     top: 0;
     left: 0;
@@ -39,7 +64,15 @@ body {
     background: var(--header-bg);
     border-bottom: 1px solid var(--header-border);
     z-index: 1000;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.header-icon {
+    width: 30px;
+    height: auto;
+    display: block;
+    cursor: pointer;
+    transform: translateX(-8px);
+    margin: 0; /
 }
 
 /* Layout-Fix für Nebeneinander-Darstellung */
@@ -56,16 +89,16 @@ body {
 }
 
 .page-title {
+    font-family: 'CasinoFlat', Arial, sans-serif;
     width: 100%;
     text-align: center;
-    margin: 4px 0 28px
-    font-size: 2rem;
-    font-weight: 600;
+    margin: 4px 0 28px;
+    font-size: 3.2rem;
+    font-weight: 800;
     color: #333;
     line-height: 1.1;
 }
 
-/* Linke Spalte */
 .left-column {
     display: flex;
     flex-direction: column;
@@ -73,10 +106,11 @@ body {
     flex: 1 1 var(--left-max-width);
     max-width: var(--left-max-width);
     min-width: 260px;
+    margin-top: 30px;
 }
 
 .task-container {
-    background: white;
+    background: rgba(72, 10, 4, var(--task-bg-alpha));
     padding: 25px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -90,6 +124,7 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 5px;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
 }
 
 .task {
@@ -131,7 +166,11 @@ input[type="text"] {
     border-box;
 }
 
-.delete-form { flex: 0 0 auto; display: flex; margin: 0; }
+.delete-form {
+    flex: 0 0 auto;
+    display: flex;
+    margin: 0;
+}
 
 .icon-button,
 button.icon-button,
@@ -176,15 +215,11 @@ button {
     box-sizing: border-box;
 }
 
-.goldenglow {
-    background: linear-gradient(135deg, #ffd700, #ffb700);
-    box-shadow: 0 0 8px rgba(255,193,7,0.6);
-    animation: goldPulse 0.3s ease-out;
-}
+.goldenglow { background: linear-gradient(135deg, #ffd700, #ffb700); box-shadow: 0 0 8px rgba(255,193,7,0.6); animation: goldPulse 0.3s ease-out; }
 @keyframes goldPulse { 0%{ transform: scale(1);}50%{ transform: scale(1.05);}100%{ transform: scale(1);} }
 
 .done-container {
-    background: white;
+    background: rgba(72, 10, 4, var(--done-bg-alpha));
     padding: 14px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.06);
@@ -192,64 +227,172 @@ button {
     flex-direction: column;
     gap: var(--done-gap);
     max-height: calc((var(--task-item-height) + var(--task-gap)) * 3 + 64px);
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible;
     padding-right: 5px;
     width: 100%;
 }
 
+.done-scroll {
+    max-height: calc((var(--task-item-height) + var(--task-gap)) * 3.4);
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: calc(100% - 40px);
+    margin: 8px 20px;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+.done-item {
+    color: #fff;
+    opacity: 0.9;
+    text-decoration: line-through;
+}
+
+.done-container > h3 {
+    color: #E0B21D;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 14px 0 14px 20px;
+}
+
 .done-container .task {
     background: transparent;
-    margin-bottom: 4px;
+    margin-bottom: 0px;
     padding-left: var(--done-indent);
-        align-items: center;
-        min-height: calc(var(--task-item-height) - 8px);
+    align-items: center;
+    min-height: calc(var(--task-item-height) - 20px);
 }
 
 .wheel-column {
     flex: 0 0 var(--wheel-fixed-width);
     max-width: var(--wheel-fixed-width);
     min-width: 300px;
-    background: white;
+    background: transparent;
     padding: 25px;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: none;
     text-align: center;
     position: sticky;
     top: 20px;
     box-sizing: border-box;
+    border: 1px solid transparent;
 }
 
-#canvas {
+.wheel-frame {
+    position: relative;
+    width: 100%;
+    max-width: var(--wheel-fixed-width);
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+.wheel-bg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, calc(-50% + var(--wheel-bg-offset-y))) scale(var(--wheel-bg-scale));
+    transform-origin: center center;
     width: 100%;
     height: auto;
-    border-radius: 50%;
-    border: 5px solid #333;
+    display: block;
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+}
+
+#wheel-frame-placeholder {}
+
+#canvas {
+    position: relative;
+    z-index: 1;
+    width: 400px;
+    height: 400px;
+    max-width: none;
     display: block;
     margin: 0 auto;
-    max-width: var(--wheel-fixed-width);
+    border-radius: 50%;
+    box-sizing: border-box;
 }
 
 #pointer {
-    width: 0;
-    height: 0;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-top: 25px solid #333;
-    margin: 0 auto -10px;
+    display: block;
+    width: 40px;
+    height: auto;
+    margin: 0 auto -14px;
     position: relative;
-    z-index: 10;
+    z-index: 20;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    image-rendering: auto;
 }
 
 .spin-btn {
-    margin-top: 20px;
-    background-color: #fbbf0d !important;
-    color: white;
-    font-weight: bold;
-    width: 100%;
-    padding: 10px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 50px;
+    background: transparent !important;
+    width: 120px;
+    height: 60px;
+    padding: 0;
     border: none;
-    border-radius: 3px;
+    border-radius: 40px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spin-btn::after {
+    content: "";
+    position: absolute;
+    left: -40%;
+    top: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.7), rgba(255,255,255,0));
+    transform: skewX(-20deg) translateX(-120%);
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+.spin-btn:hover::after {
+    animation: shine 900ms ease-in-out forwards;
+}
+
+@keyframes shine {
+    0% { transform: skewX(-20deg) translateX(-120%); }
+    100% { transform: skewX(-20deg) translateX(220%); }
+}
+
+.spin-btn:disabled::after,
+.spin-btn[disabled]::after,
+.spin-btn[aria-disabled="true"]::after,
+.spin-btn:disabled:hover::after,
+.spin-btn[disabled]:hover::after,
+.spin-btn[aria-disabled="true"]:hover::after {
+    display: none !important;
+    animation: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.spin-icon { pointer-events: none; }
+
+.spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.spin-icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    pointer-events: none;
+    border-radius: 10px;
+}
+
+.spin-wrapper {
+    display: inline-block;
+    position: relative;
     cursor: pointer;
 }
 
@@ -259,39 +402,6 @@ button {
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
-}
-
-/* --- Breakpoints --- */
-@media (max-width: 1024px) {
-    .left-column { max-width: 520px; }
-    .wheel-column { min-width: 320px; max-width: 480px; flex: 0 0 480px; } /* angepasst für mittlere Breite */
-}
-
-/* Ab hier: bei kleineren Bildschirmen stapeln (Wheel unter Tasks) */
-@media (max-width: 720px) {
-    .page-wrapper {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 12px;
-        gap: 14px;
-    }
-    .left-column {
-        width: 100%;
-        max-width: none;
-        flex: 1 1 auto;
-        order: 1;
-    }
-    .wheel-column {
-        width: 100%;
-        max-width: none;
-        min-width: 0;
-        order: 2;
-        position: relative;
-        top: 0;
-        padding: 18px;
-    }
-    /* Canvas behält Desktop-Proportion bis zu kleineren Displays */
-    #canvas { max-width: var(--wheel-fixed-width); }
 }
 
 .controls {
@@ -334,27 +444,91 @@ button {
 .btn-primary {
     padding: 8px 12px;
     border-radius: 3px;
-    background-color: green;
-    color: #fff;
-    border: none;
+    background-color: #EDCF7E;
+    color: #390703;
+    border: 3px solid #FFCD29;
     cursor: pointer;
     box-sizing: border-box;
 }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
 .btn-danger {
     padding: 8px 12px;
     border-radius: 3px;
-    background-color: green;
-    color: #fff;
-    border: none;
+    background-color: #EDCF7E;
+    color: #390703;
+    border: 3px solid #FFCD29;
     cursor: pointer;
     box-sizing: border-box;
 }
 
-/* Sehr kleine Displays: Wheel wird kompakter */
+/* --- Breakpoints --- */
+@media (max-width: 1024px) {
+    .left-column { max-width: 520px; }
+    .wheel-column { min-width: 320px; max-width: 480px; flex: 0 0 480px; } /* angepasst für mittlere Breite */
+
+        :root {
+            --wheel-bg-scale: 1.02;
+            --wheel-bg-offset-y: 4px;
+        }
+        .wheel-column {
+            min-width: 320px;
+            max-width: 480px;
+            flex: 0 0 480px;
+        }
+        #canvas {
+            width: 440px;
+            height: 440px;
+            max-width: 100%;
+        }
+        #pointer { width: 36px; margin: 0 auto -12px; }
+}
+
+/* Ab hier: bei kleineren Bildschirmen stapeln (Wheel unter Tasks) */
+@media (max-width: 720px) {
+    .page-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 12px;
+        gap: 14px;
+    }
+    .left-column {
+        width: 100%;
+        max-width: none;
+        flex: 1 1 auto;
+        order: 1;
+    }
+    :root {
+           --wheel-bg-scale: 1.02;
+           --wheel-bg-offset-y: 6px;
+       }
+       .wheel-column {
+           width: 100%;
+           max-width: none;
+           min-width: 0;
+           padding: 18px;
+           order: 2;
+           position: static;
+           top: auto;
+       }
+       #canvas {
+           width: min(400px, 92%);
+           height: auto;
+           max-width: var(--wheel-fixed-width);
+       }
+       #pointer { width: 30px; margin: 0 auto -8px; }
+}
+
 @media (max-width: 480px) {
-    :root { --header-height: 56px; }
+    :root {
+       --header-height: 56px;
+        --wheel-bg-scale: 1.00;     /* bei ganz kleinen Geräten nicht skalieren */
+        --wheel-bg-offset-y: 3px;
+    }
+
     .page-wrapper { padding: 10px; gap: 12px; }
     .page-title { font-size: 1.25rem; margin: 6px 0 18px; }
 
@@ -365,8 +539,19 @@ button {
     .icon-img { width: 12px; height: 12px; }
     .icon-button, button.icon-button, button.edit, button.delete { width: 28px; height: 28px; padding: 3px; }
 
-    .wheel-column { padding: 12px; }
-    #canvas { max-width: 360px; border-width: 4px; } /* bleibt kompakt auf sehr kleinen Geräten */
+    .wheel-column {
+        padding: 12px;
+        order: 2;
+        position: static;
+        top: auto;
+    }
+
+    #canvas {
+        width: min(320px, 92%);
+        height: auto;
+        max-width: 92%;
+    }
+    #pointer { width: 24px; margin: 0 auto -6px; }
 
     .controls {
         flex-direction: column;
@@ -381,7 +566,6 @@ button {
     }
     .add-form { width: 100%; }
     .add-form .add-input { width: 100%; min-width: 0; }
-
 }
 
 /* Accessibility */

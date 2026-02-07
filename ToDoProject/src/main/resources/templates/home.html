@@ -12,12 +12,12 @@
 </header>
 
 <div class="page-wrapper">
-
+    <h1 class="page-title">WHEEL OF TASKS</h1>
     <div class="left-column">
         <div class="task-container">
             <div th:each="task : ${tasks}" th:if="${task.chosen and !task.done}" class="chosen-task">
                 <strong>🎯 Aktuelle Aufgabe:</strong>
-                <p th:text="${task.name}" style="font-size: 1.2rem; margin: 10px 0;"></p>
+                <p th:text="${task.name}" style="font-size: 1.2rem; color:#390703; margin: 10px 0;"></p>
                 <form th:action="@{/taskDone}" method="post">
                     <input type="hidden" name="id" th:value="${task.id}">
                     <button type="button" onclick="completeTaskConfetti(this)" class="btn-primary">
@@ -41,7 +41,7 @@
                     </form>
                 </div>
             </div>
-            <div th:if="${openTasks.size() >= 15}" style="color:darkgreen; margin-top: 8px;">
+            <div th:if="${openTasks.size() >= 15}" style="color:#E9E4E4; margin-top: 8px;">
                 Maximale Anzahl erreicht
             </div>
             <div class="task-list">
@@ -74,7 +74,7 @@
     <div class="wheel-column">
         <img th:src="@{/icons/Pointer.png}" alt="Pointer" id="pointer" class="pointer-img">
         <div class="wheel-frame">
-            <img th:src="@{/icons/Wheel.png}" alt="" class="wheel-bg">
+            <img th:src="@{/icons/Wheel2.png}" alt="" class="wheel-bg">
             <canvas id="canvas" width="400" height="400"></canvas>
         </div>
         <span id="spinWrapper" class="spin-wrapper" title="JETZT DREHEN">
@@ -115,6 +115,7 @@
     const WHEEL_STROKE_COLOR = '#FDEED5';
     const WHEEL_LINE_WIDTH = 2;
     let currentAngle = 0;
+    let isSpinning = false;
 
     async function loadWheelData() {
         const responseOpenTasks = await fetch('/api/tasks/open');
@@ -152,11 +153,10 @@
         if (tasksForWheel.length === 0) {
             ctx.clearRect(0,0,400,400);
             ctx.font = "16px Arial";
-            ctx.fillText("Keine Aufgaben", 150, 200);
             return;
         }
         const arc = (2 * Math.PI) / tasksForWheel.length;
-        const colors = ['#BD1E24', "white"];
+        const colors = ['#A31000', "#E9E4E4"];
 
         ctx.lineWidth = WHEEL_LINE_WIDTH;
         ctx.strokeStyle = WHEEL_STROKE_COLOR;
@@ -181,6 +181,16 @@
     }
 
     function startSpin() {
+        const spinBtn = document.getElementById("spinBtn");
+        const spinWrapper = document.getElementById("spinWrapper");
+
+        if (isSpinning || spinBtn.disabled) return;
+
+        isSpinning = true;
+        spinBtn.disabled = true;
+        spinBtn.style.opacity = "0.5";
+        spinWrapper.style.pointerEvents = "none";
+
         let velocity = Math.random() * 0.3 + 0.4;
         const animate = () => {
             velocity *= 0.985;

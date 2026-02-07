@@ -8,12 +8,13 @@
     --header-border: #711005;
     --header-gap: 30px;
     --gutter: 20px;
-    --task-bg-alpha: 0.7;
-    --done-bg-alpha: 0.8;
+    --task-bg-alpha: 0.5;
+    --done-bg-alpha: 0.5;
     --scroll-track: rgba(24, 6, 6, 0.18);
     --scroll-thumb: rgba(253, 238, 213, 0.95);
     --scroll-thumb-hover: rgba(160, 20, 20, 1);
     --scroll-width: 10px;
+    --input-focus-color: #FFCD29;
 
     --left-max-width: 600px;
     --wheel-fixed-width: 520px;
@@ -27,8 +28,8 @@
 }
 
 @font-face {
-    font-family: 'CasinoFlat';
-    src: url('/fonts/CasinoFlat.ttf') format('truetype');
+    font-family: 'GrandCasinoDemo';
+    src: url('/fonts/Grand Casino Demo.otf') format('opentype');
     font-weight: 800;
     font-style: normal;
     font-display: swap;
@@ -89,13 +90,13 @@ body {
 }
 
 .page-title {
-    font-family: 'CasinoFlat', Arial, sans-serif;
+    font-family: 'GrandCasinoDemo', 'CasinoFlat', Arial, sans-serif;
     width: 100%;
     text-align: center;
     margin: 4px 0 28px;
-    font-size: 3.2rem;
+    font-size: 3.5rem;
     font-weight: 800;
-    color: #333;
+    color: #FFCD29;
     line-height: 1.1;
 }
 
@@ -106,7 +107,11 @@ body {
     flex: 1 1 var(--left-max-width);
     max-width: var(--left-max-width);
     min-width: 260px;
-    margin-top: 30px;
+    margin-top: 32px;
+}
+
+.chosen-task > strong {
+    color: #390703;
 }
 
 .task-container {
@@ -125,6 +130,16 @@ body {
     overflow-x: hidden;
     padding-right: 5px;
     scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+.edit-input,
+input[type="text"].edit-input {
+    color: #E9E4E4;
+}
+
+.add-input,
+.add-form .add-input {
+    color: #390703;
 }
 
 .task {
@@ -154,9 +169,9 @@ input[type="text"].edit-input {
     flex: 1;
     min-width: 0;
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 1.8px solid #FFCD29;
     border-radius: 4px;
-    background: white;
+    background: transparent;
 }
 
 input[type="text"] {
@@ -248,7 +263,7 @@ button {
 }
 
 .done-container > h3 {
-    color: #E0B21D;
+    color: #E0B62D;
     font-size: 1.05rem;
     font-weight: 600;
     margin: 14px 0 14px 20px;

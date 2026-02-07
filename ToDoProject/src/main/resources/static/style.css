@@ -1,3 +1,4 @@
+/* Root-Variablen: zentrale Design-Parameter */
 :root {
     --task-item-height: 56px;
     --task-gap: 0px;
@@ -22,6 +23,7 @@
     --wheel-bg-offset-y: 3px;
 }
 
+/* Entfernt Outline für nicht sichtbare Fokuszustände */
 :focus:not(:focus-visible) {
     outline: none;
     box-shadow: none;
@@ -35,6 +37,7 @@
     font-display: swap;
 }
 
+/* Grundlayout */
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
@@ -51,7 +54,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-
+/* Header mit Icon */
 .site-header {
     display: flex;
     align-items: center;
@@ -89,6 +92,7 @@ body {
     flex-wrap: wrap;
 }
 
+/* Wheel of Tasks Titel */
 .page-title {
     font-family: 'GrandCasinoDemo', 'CasinoFlat', Arial, sans-serif;
     width: 100%;
@@ -100,6 +104,7 @@ body {
     line-height: 1.1;
 }
 
+/* Linke Spalte mit Tasks */
 .left-column {
     display: flex;
     flex-direction: column;
@@ -110,10 +115,7 @@ body {
     margin-top: 32px;
 }
 
-.chosen-task > strong {
-    color: #390703;
-}
-
+/* Container für offene Tasks */
 .task-container {
     background: rgba(72, 10, 4, var(--task-bg-alpha));
     padding: 25px;
@@ -142,6 +144,7 @@ input[type="text"].edit-input {
     color: #390703;
 }
 
+/* Einzelne Task-Zeile */
 .task {
     display: flex;
     align-items: center;
@@ -155,6 +158,7 @@ input[type="text"].edit-input {
     min-width: 0;
 }
 
+/* Formular für Task-Bearbeitung */
 .edit-form {
     display: flex;
     align-items: center;
@@ -164,6 +168,7 @@ input[type="text"].edit-input {
     margin: 0;
 }
 
+/* Eingabefeld für Task-Bearbeitung */
 .edit-input,
 input[type="text"].edit-input {
     flex: 1;
@@ -181,12 +186,14 @@ input[type="text"] {
     border-box;
 }
 
+/* Formular für Task-Löschung */
 .delete-form {
     flex: 0 0 auto;
     display: flex;
     margin: 0;
 }
 
+/* Gemeinsame Styles für Editieren- und Löschen-Buttons */
 .icon-button,
 button.icon-button,
 button.edit,
@@ -212,6 +219,7 @@ button.delete {
     object-fit: contain;
 }
 
+/* Hover-Effekt für Editieren- und Löschen-Buttons */
 .icon-button.edit:hover,
 .icon-button.delete:hover,
 button.delete:hover,
@@ -222,6 +230,7 @@ button.edit:hover {
     box-shadow: 0 0 0 6px rgba(251,191,13,0.06);
 }
 
+/* Gemeinsame Styles für primäre und sekundäre Buttons */
 button {
     padding: 8px 12px;
     border: none;
@@ -230,9 +239,11 @@ button {
     box-sizing: border-box;
 }
 
+/* Visueller Effekt beim Task-Complete-Button */
 .goldenglow { background: linear-gradient(135deg, #ffd700, #ffb700); box-shadow: 0 0 8px rgba(255,193,7,0.6); animation: goldPulse 0.3s ease-out; }
 @keyframes goldPulse { 0%{ transform: scale(1);}50%{ transform: scale(1.05);}100%{ transform: scale(1);} }
 
+/* Container für erledigte Tasks */
 .done-container {
     background: rgba(72, 10, 4, var(--done-bg-alpha));
     padding: 14px;
@@ -247,6 +258,7 @@ button {
     width: 100%;
 }
 
+/* Erzeugt Scrollbar für erledigte Tasks */
 .done-scroll {
     max-height: calc((var(--task-item-height) + var(--task-gap)) * 3.4);
     overflow-y: auto;
@@ -256,12 +268,14 @@ button {
     scrollbar-color: var(--scroll-thumb) var(--scroll-track);
 }
 
+/* Stil für erledigte Tasks: durchgestrichen und leicht transparent */
 .done-item {
     color: #fff;
     opacity: 0.9;
     text-decoration: line-through;
 }
 
+/* Titel für erledigte Tasks */
 .done-container > h3 {
     color: #E0B62D;
     font-size: 1.05rem;
@@ -269,6 +283,7 @@ button {
     margin: 14px 0 14px 20px;
 }
 
+/* Einzelne erledigte Task-Zeile */
 .done-container .task {
     background: transparent;
     margin-bottom: 0px;
@@ -277,6 +292,7 @@ button {
     min-height: calc(var(--task-item-height) - 20px);
 }
 
+/* Rechte Spalte mit Wheel of Tasks */
 .wheel-column {
     flex: 0 0 var(--wheel-fixed-width);
     max-width: var(--wheel-fixed-width);
@@ -292,6 +308,7 @@ button {
     border: 1px solid transparent;
 }
 
+/* Container für das Wheel */
 .wheel-frame {
     position: relative;
     width: 100%;
@@ -301,6 +318,7 @@ button {
     overflow: visible;
 }
 
+/* Hintergrundbild für das Wheel, zentriert und skaliert */
 .wheel-bg {
     position: absolute;
     left: 50%;
@@ -315,6 +333,7 @@ button {
     user-select: none;
 }
 
+/* Platzhalter für das Wheel, um die Größe zu reservieren */
 #wheel-frame-placeholder {}
 
 #canvas {
@@ -329,6 +348,7 @@ button {
     box-sizing: border-box;
 }
 
+/* Zeigt den Zeiger über dem Wheel an */
 #pointer {
     display: block;
     width: 40px;
@@ -342,6 +362,7 @@ button {
     image-rendering: auto;
 }
 
+/* Stil für den Spin-Button mit animiertem Glanz-Effekt */
 .spin-btn {
     position: relative;
     overflow: hidden;
@@ -394,6 +415,7 @@ button {
 
 .spin-icon { pointer-events: none; }
 
+/* Deaktivierter Zustand für den Spin-Button */
 .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .spin-icon {
@@ -405,18 +427,25 @@ button {
     border-radius: 10px;
 }
 
+/* Container für den Spin-Button */
 .spin-wrapper {
     display: inline-block;
     position: relative;
     cursor: pointer;
 }
 
+/* Stil für die aktuell gewählte Aufgabe */
 .chosen-task {
     background: #fff3e0;
     border: 2px solid #fbbf0d;
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
+}
+
+/* Stil für den Titel der gewählten Aufgabe */
+.chosen-task > strong {
+    color: #390703;
 }
 
 .controls {
@@ -428,6 +457,7 @@ button {
     min-width: 0;
 }
 
+/* Formular für das Hinzufügen neuer Tasks */
 .add-form {
     flex: 1;
     display: flex;
@@ -437,6 +467,7 @@ button {
     margin: 0;
 }
 
+/* Eingabefeld für das Hinzufügen neuer Tasks */
 .add-form .add-input {
     flex: 1;
     min-width: 0;
@@ -456,6 +487,7 @@ button {
 
 .button-group .delete-all-form { margin: 0; }
 
+/* Stil für Add-Button */
 .btn-primary {
     padding: 8px 12px;
     border-radius: 3px;
@@ -470,6 +502,7 @@ button {
     cursor: not-allowed;
 }
 
+/* Stil für Delete-Button */
 .btn-danger {
     padding: 8px 12px;
     border-radius: 3px;
@@ -480,7 +513,7 @@ button {
     box-sizing: border-box;
 }
 
-/* --- Breakpoints --- */
+/* --- Responsive Breakpoints --- */
 @media (max-width: 1024px) {
     .left-column { max-width: 520px; }
     .wheel-column { min-width: 320px; max-width: 480px; flex: 0 0 480px; } /* angepasst für mittlere Breite */

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Entity
-public class Task {
+public class Task {                                  // Task Klasse mit den Attributen id, name, done und chosen. Die Klasse ist als Entity annotiert, um sie in der Datenbank zu speichern
     @Id
     private Integer id;
     private String name;

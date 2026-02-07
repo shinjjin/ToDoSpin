@@ -66,18 +66,18 @@ public class HomeController {
 
     @PostMapping("deleteAll")
     public String deleteAllTasks() {
-        taskService.deleteAll();                                                     //setzt ID auf 0 zurück
+        taskService.deleteAll();                                                     //löscht alle Tasks, die nicht auf Done stehen
         return "redirect:/";
     }
 
     @GetMapping("/api/tasks/open")
-    @ResponseBody
+    @ResponseBody                                                                     // Gibt eine Liste aller offenen Tasks zurück
     public List<Task> getOpenTasks() {
         return taskService.getOpenTasks();
     }
 
     @GetMapping("/api/tasks/chosen")
-    @ResponseBody
+    @ResponseBody                                                                      // Gibt eine Liste aller gewählten Tasks zurück
     public List<Task> getChosenTask(){
         return taskService.getChosenTask();
     }

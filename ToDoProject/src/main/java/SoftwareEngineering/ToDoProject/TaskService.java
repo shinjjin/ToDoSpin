@@ -3,6 +3,7 @@ package SoftwareEngineering.ToDoProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -34,7 +35,9 @@ public class TaskService implements TaskObserver {                              
             return false;
         }
 
-        Task task = new Task(currentId++, name);
+        int lastId = getAllTasks().stream().map(Task::getId).max(Comparator.comparingDouble(Integer::intValue)).orElse(0);
+
+        Task task = new Task(currentId = lastId + 1, name);
         repository.save(task);
         return true;
     }

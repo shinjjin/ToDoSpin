@@ -17,7 +17,7 @@
         <div class="task-container">
             <!-- Gewählte Aufgabe: erscheint nur wenn task.chosen und nicht erledigt -->
             <div th:each="task : ${tasks}" th:if="${task.chosen and !task.done}" class="chosen-task">
-                <strong>🎯 Aktuelle Aufgabe:</strong>
+                <strong>Aktuelle Aufgabe:</strong>
                 <p th:text="${task.name}" style="font-size: 1.2rem; color:#390703; margin: 10px 0;"></p>
                 <!-- Formular zum Markieren als erledigt-->
                <form th:action="@{/taskDone}" method="post">

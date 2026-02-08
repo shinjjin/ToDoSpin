@@ -384,21 +384,21 @@ button {
     position: absolute;
     left: -40%;
     top: 0;
-    width: 40%;
+    width: 90%;
     height: 100%;
     background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.7), rgba(255,255,255,0));
-    transform: skewX(-20deg) translateX(-120%);
+    transform: skewX(-20deg) translateX(-100%);
     pointer-events: none;
     opacity: 0.9;
 }
 
 .spin-btn:hover::after {
-    animation: shine 900ms ease-in-out forwards;
+    animation: shine 900ms ease-in-out infinite;
 }
 
 @keyframes shine {
-    0% { transform: skewX(-20deg) translateX(-120%); }
-    100% { transform: skewX(-20deg) translateX(220%); }
+    0% { transform: skewX(-20deg) translateX(-100%); }
+    100% { transform: skewX(-20deg) translateX(100%); }
 }
 
 .spin-btn:disabled::after,

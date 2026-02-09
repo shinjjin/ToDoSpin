@@ -7,3 +7,6 @@ Das Projekt lässt sich folgendermaßen ausführen:
 3. In IntelliJ ein JDK installieren (mindestens 21)
 4. ToDoProjectApplication.java ausführen
 5. [localhost:8080](http://localhost:8080/) aufrufen
+
+# Link zum Github repo
+https://github.com/shinjjin/ToDoSpin
